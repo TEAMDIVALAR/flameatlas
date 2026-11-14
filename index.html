@@ -195,7 +195,13 @@ textarea{flex:1;resize:none;background:var(--panel-2);color:var(--ink);border:1p
 .srcs li b{position:absolute;left:0;top:0;font-family:var(--f-mono);font-size:11px;color:var(--cool);font-weight:500}
 .team{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 .names{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.names span{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 14px;font-size:14px}
+.names button{font:inherit;font-size:14px;color:var(--ink);border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.names button small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--void);background:var(--cool);border-radius:999px;padding:2px 7px}
+.names button:hover,.names button[aria-pressed="true"]{border-color:var(--cool)}
+.member{margin-top:14px;display:flex;align-items:center;gap:16px;border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:16px;max-width:420px}
+.member .av{flex:none;width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:24px;color:var(--void);background:radial-gradient(circle at 35% 30%,#fff 0 8%,var(--cool) 40%,#2f6fb0 100%);box-shadow:0 0 22px rgba(124,200,255,.35)}
+.member b{display:block;font-size:17px}
+.member span{font-size:13px;color:var(--muted)}
 .teamname{font-family:var(--f-display);font-size:34px;font-weight:700;letter-spacing:.01em}
 footer{padding:28px 0 48px;color:var(--muted);font-size:12px}
 footer p{margin:4px 0}
@@ -246,6 +252,9 @@ footer p{margin:4px 0}
 .cost b{display:block;font-family:var(--f-display);font-size:20px;font-weight:500}
 .cost span{font-size:12px;color:var(--muted)}
 @media (max-width:980px){.impact{grid-template-columns:1fr}}
+
+/* raw */
+.rawpt{cursor:pointer}.rawpt:hover circle,.rawpt:focus circle{stroke:#fff;stroke-width:2}
 
 /* gaps */
 .gapstats{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
@@ -333,6 +342,7 @@ html{scroll-behavior:smooth}
       <a href="#lab">Flame lab</a>
       <a href="#console">Risk console</a>
       <a href="#map">Flammability map</a>
+      <a href="#raw">Raw data</a>
       <a href="#findings">Findings</a>
       <a href="#gaps">Evidence gaps</a>
       <a href="#impact">Impact</a>
@@ -351,7 +361,7 @@ html{scroll-behavior:smooth}
       <div class="eyebrow">NASA Space Apps 2026 · Microgravity fire safety</div>
       <h1>Fire off Earth <em>plays by different rules.</em></h1>
       <p class="lede">FlameAtlas reads decades of NASA microgravity combustion results, ranks them by what matters for your mission, and turns them into fire-safety calls for the Moon, Mars and everything in between.</p>
-      <p class="sibadge"><span>SI-powered</span>Built by using Claude to read 29 NASA and peer-reviewed sources, then checking every finding by hand. <a href="#si">How</a></p>
+      <p class="sibadge"><span>SI-powered</span>Built by using Claude to read 30 NASA and peer-reviewed sources, then checking every finding by hand. <a href="#si">How</a></p>
       <div class="stats" id="stats"></div>
       <div class="cta"><a class="btn" href="#lab">Try the Flame Lab</a><a class="btn ghost" href="#gaps">See what NASA should test next</a></div>
     </div>
@@ -472,6 +482,31 @@ html{scroll-behavior:smooth}
   </div>
 </section>
 
+<section id="raw">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="idx">02B · RAW NASA DATA</div><h2>129 ISS fire tests, straight from the BASS-II log</h2>
+      <p>We processed NASA's own BASS-II experimental table from the Physical Sciences Informatics repository (PSI-25): every test the crew ran in the Microgravity Science Glovebox in 2014–2016.</p></div>
+    </div>
+    <div class="gapstats" id="rawstats"></div>
+    <div class="charts">
+      <div class="card chart">
+        <h3>Gas released per test vs. starting oxygen</h3>
+        <p class="cap">Each point is one ISS test. Vertical axis: rise in carbon monoxide inside the glovebox during that test. Tap a point for details.</p>
+        <svg id="rawsc" viewBox="0 0 640 400" role="img" aria-label="Scatter plot of CO rise versus starting oxygen for BASS-II tests"></svg>
+        <div class="legend" id="rawleg"></div>
+        <div class="ptinfo" id="rawinfo">Tap a point to see the test.</div>
+      </div>
+      <div class="card chart">
+        <h3>Median CO rise by sample type</h3>
+        <p class="cap">Thicker acrylic released far more CO than thin films and fabric.</p>
+        <svg id="rawbar" viewBox="0 0 400 300" role="img" aria-label="Bar chart of median CO rise by sample type"></svg>
+        <p class="note">How to read this: values are the change in glovebox CO from the start to the end of each test, so they also reflect sample size and burn time. Tests with missing or out-of-range sensor readings are left out. Data: <a class="ref" href="#src-S30">S30</a>. Finding <a class="ref" href="#F24" data-f="F24">F24</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="findings">
   <div class="wrap">
     <div class="sec-head">
@@ -547,7 +582,7 @@ html{scroll-behavior:smooth}
   <div class="wrap">
     <div class="sec-head">
       <div><div class="idx">06 · QUESTIONS</div><h2>Fire safety questions, answered from the evidence</h2>
-      <p>Search the 23 findings, or open one of the common questions. Answers were drafted with SI from the findings and checked by the team. Every answer links to the findings behind it.</p></div>
+      <p>Search the 24 findings, or open one of the common questions. Answers were drafted with SI from the findings and checked by the team. Every answer links to the findings behind it.</p></div>
     </div>
     <div class="qa">
       <div class="card">
@@ -598,13 +633,13 @@ html{scroll-behavior:smooth}
     <div class="card" id="si" style="margin-top:20px;scroll-margin-top:80px">
       <div class="idx" style="margin-bottom:14px">THE SI PIPELINE BEHIND FLAMEATLAS</div>
       <div class="pipe">
-        <div><b class="tab">29</b><span>NASA and peer-reviewed sources: PSI records, NTRS papers, journals</span></div>
+        <div><b class="tab">30</b><span>NASA and peer-reviewed sources: PSI records, NTRS papers, journals</span></div>
         <div class="arr" aria-hidden="true">→</div>
         <div class="hot"><b>SI extraction</b><span>Claude reads each source and drafts structured records: conditions, outcomes, numbers, citation</span></div>
         <div class="arr" aria-hidden="true">→</div>
         <div><b>Human check</b><span>The team compares every number with its source and corrects or removes what does not match</span></div>
         <div class="arr" aria-hidden="true">→</div>
-        <div><b class="tab">23 + 16 + 72</b><span>findings, flight test points and evidence-gap cells</span></div>
+        <div><b class="tab">24 + 129 + 72</b><span>findings, raw ISS test records and evidence-gap cells</span></div>
         <div class="arr" aria-hidden="true">→</div>
         <div class="hot"><b>SI interpretation</b><span>Ranking, risk actions and question answers drafted with Claude from the checked records</span></div>
       </div>
@@ -635,9 +670,14 @@ html{scroll-behavior:smooth}
     <div>
       <div class="idx">TEAM</div>
       <div class="teamname">Divalar</div>
-      <div class="names">
-        <span>Zeki Kaya Odabaş</span><span>Ali Selim Türkkan</span><span>Kaan Kalender</span><span>Çınar Serim</span><span>Kuzey Özer</span>
+      <div class="names" id="names">
+        <button type="button" data-m="0">Zeki Kaya Odabaş<small>President</small></button>
+        <button type="button" data-m="1">Ali Selim Türkkan<small>Vice President</small></button>
+        <button type="button" data-m="2">Kaan Kalender</button>
+        <button type="button" data-m="3">Çınar Serim</button>
+        <button type="button" data-m="4">Kuzey Özer</button>
       </div>
+      <div class="member" id="member" hidden></div>
     </div>
     <div class="card">
       <div class="idx" style="margin-bottom:8px">ABOUT THIS PROJECT</div>
@@ -680,6 +720,7 @@ const SOURCES = {
   S26:{t:"Cool Flame Investigation (CFI) Science Concept Review, NASA Glenn (2014), with FLEX test data",u:null},
   S27:{t:"Case Western Reserve University faculty publication (January 2024): numerical simulations of duct-height effects on flame spread in the Saffire experiments",u:"https://commons.case.edu/facultyworks/1135"},
   S28:{t:"JAXA, Combustion Experiment in Microgravity leaflet: FLARE-2 and FLARE-3 material flammability evaluation under gravity effects (2026)",u:"https://humans-in-space.jaxa.jp/2026/07/Leaflet_CombustionExperimentInMicrogravity.pdf"},
+  S30:{t:"NASA Physical Sciences Informatics, PSI-25: Burning and Suppression of Solids II (BASS-II), Experimental Table, Version 4. DOI 10.60555/4qc4-de67. License CC0-1.0",u:"https://psi.nasa.gov/physci/repo/data/investigations/PSI-25"},
   S29:{t:"Smoke Aerosol Measurement Experiment (SAME) investigation record, NASA PSI",u:"https://psi.nasa.gov"}
 };
 
@@ -754,6 +795,9 @@ const FINDINGS = [
  {id:"F22",topic:"spread",imp:1,ev:"flightL",env:["ug","ea"],mats:["pmma"],src:["S24"],
   t:"Surface ribs and edges speed up flames",
   s:"On a ribbed acrylic panel burned in Saffire V at 26.9% O₂ and 76 kPa, conditions envisioned for exploration missions, flames ran along rib edges at up to 0.88 mm/s on 1 mm ribs. Thinner ribs burned faster."},
+ {id:"F24",topic:"tox",imp:3,ev:"flight",env:["ug"],mats:["pmma"],src:["S30"],
+  t:"Thick acrylic parts released about 17 times more carbon monoxide than fabric",
+  s:"Our analysis of the raw BASS-II test log (129 ISS tests): thick acrylic slabs raised glovebox CO by a median of 335 ppm per test, acrylic rods by 87 ppm, thin acrylic films by 16 ppm and cotton-fiberglass fabric by 20 ppm. Realistic, thicker parts carry more fuel, so detection and gas scrubbing should be sized for them, not for thin test samples."},
  {id:"F23",topic:"spread",imp:1,ev:"ground",env:["ea"],mats:["sibal"],src:["S8"],
   t:"Lower pressure slows spread",
   s:"On Earth, flame spread over cotton-fiberglass fabric dropped from 41.8 to 5.4 mm/s as pressure fell from 100 to 30 kPa. Lower cabin pressure helps, but exploration atmospheres raise the oxygen fraction at the same time (F4, F5)."}
@@ -830,7 +874,7 @@ function assess(gk, ak, mk, vk){
 /* ============ EXPERIMENTS ============ */
 const EXPS = [
   {n:"Saffire I–VI",p:"Cygnus cargo vehicle, after ISS departure",d:"The largest fires ever lit in space, burned in an uncrewed Cygnus before reentry so no crew is at risk.",vars:[["Scale","Up to 94 × 40.6 cm fabric"],["Materials","SIBAL, cotton, PMMA, Nomex, silicone"],["Atmospheres","Air to ~31% O₂ at ~54 kPa"],["Flights","I–III 2016–17, IV 2020, V, VI"]],f:["F6","F7","F9","F10","F11","F18","F19"]},
-  {n:"BASS / BASS-II",p:"ISS Microgravity Science Glovebox",d:"Small flow-tunnel burns testing whether materials burn as well or better in microgravity, then suppressing them with nitrogen.",vars:[["Samples","41 samples, 89 test points (BASS)"],["Airflow","5–50 cm/s"],["Suppressant","N₂, 0–500 cc/min"],["O₂","Down to 13.6% (BASS-II)"]],f:["F1","F20","F21"]},
+  {n:"BASS / BASS-II",p:"ISS Microgravity Science Glovebox",d:"Small flow-tunnel burns testing whether materials burn as well or better in microgravity, then suppressing them with nitrogen.",vars:[["Samples","41 samples, 89 test points (BASS)"],["Airflow","5–50 cm/s"],["Suppressant","N₂, 0–500 cc/min"],["O₂","Down to 13.6% (BASS-II)"]],f:["F1","F20","F21","S5"]},
   {n:"FLEX / FLEX-2",p:"ISS Combustion Integrated Rack (MDCA)",d:"Single fuel droplets burned as perfect spheres to map flammability limits and test gaseous suppressants.",vars:[["Fuels","Heptane, methanol, mixtures"],["O₂","0.10–0.40 mole fraction"],["Pressure","0.7–3.0 atm"],["Agents","CO₂, helium"]],f:["F15","F16"]},
   {n:"CFI",p:"ISS Combustion Integrated Rack",d:"Follow-on to FLEX that systematically studies the cool flames FLEX discovered by accident.",vars:[["Fuels","n-dodecane, farnesane, surrogate blends"],["Focus","Low-temperature chemistry"]],f:["F16"]},
   {n:"ACME",p:"ISS Combustion Integrated Rack",d:"Gaseous non-premixed flames for soot, flame stability and electric-field effects.",vars:[["Fuels","Ethylene, methane, diluted"],["Key result","5–8× more soot in µg"]],f:["F17"]},
@@ -971,7 +1015,7 @@ function renderMargin(){
 }
 
 function renderStatic(){
-  $("#stats").innerHTML=[[EXPS.length,"experiment families"],[FINDINGS.length,"ranked findings"],[PTS.length,"flight test points"],[Object.keys(SOURCES).length,"cited sources"]].map(([n,l])=>`<div class="stat"><b class="tab">${n}</b><span>${l}</span></div>`).join("");
+  $("#stats").innerHTML=[[EXPS.length,"experiment families"],[FINDINGS.length,"ranked findings"],[RAW.length,"raw ISS test records"],[Object.keys(SOURCES).length,"cited sources"]].map(([n,l])=>`<div class="stat"><b class="tab">${n}</b><span>${l}</span></div>`).join("");
   $("#exps").innerHTML=EXPS.map(x=>`<article class="card exp"><div class="plat">${esc(x.p)}</div><h3>${esc(x.n)}</h3><p>${esc(x.d)}</p><dl>${x.vars.map(v=>`<dt>${esc(v[0])}</dt><dd>${esc(v[1])}</dd>`).join("")}</dl><div class="links">${refLinks(x.f)}</div></article>`).join("");
   $("#srcs").innerHTML=Object.entries(SOURCES).map(([k,s])=>`<li id="src-${k}"><b>${k}</b>${s.u?`<a href="${s.u}" target="_blank" rel="noopener">${esc(s.t)}</a>`:esc(s.t)+" (document provided by the team)"}</li>`).join("");
   const tbl=(title,rows)=>`<div class="card"><h3>${title}</h3><table>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${r[1]}</td></tr>`).join("")}</table></div>`;
@@ -997,6 +1041,7 @@ const FAQ=[
  {q:"Which materials resisted fire in flight tests?",a:"Ultem and Nomex HT90-40 did not burn in ISS air at about 15 cm/s, and a Nomex sample did not ignite in Saffire VI. Nomex III, a different grade, did burn at 22% O₂ [F20]."},
  {q:"What is the exploration atmosphere and why is it riskier?",a:"NASA's recommended Moon-to-Mars habitat atmosphere is 8.2 psia with 34% oxygen, chosen to shorten spacewalk preparation [F4]. Lower pressure slows flame spread [F23], but the higher oxygen fraction makes materials such as acrylic more flammable [F5], and few thin materials are rated at those conditions even on Earth [F4]."},
  {q:"Can smoke detectors tell smoke from dust in orbit?",a:"Not easily. Smoke particles from spacecraft materials are mostly 100–200 nm, but silicone smoke puts almost half its mass above 1 µm [F12]. Background dust particles on the ISS are also larger than on Earth [F13], so detectors need to read a wide range of sizes."},
+ {q:"What did you find in the raw NASA data?",a:"We processed the BASS-II experimental table from NASA PSI (129 ISS tests). Thick acrylic slabs raised glovebox CO by a median of 335 ppm per test, compared with 20 ppm for cotton-fiberglass fabric and 16 ppm for thin acrylic films [F24]. 17 tests started below 16% O₂, the level where a ¼-inch acrylic rod blows off on Earth [F1]."},
  {q:"What data are still missing?",a:"Most combinations of material, atmosphere and gravity have never been tested: 55 of the 72 in this atlas have no data, including every Mars case and every lunar case at raised oxygen. NASA's FM2 project plans the first long-duration burns on the Moon [F2]. See the Evidence Gaps section."}
 ];
 function fmtA(t){return esc(t).replace(/\[(F\d+)\]/g,(m,id)=>`<a class="ref" href="#${id}" data-f="${id}">${id}</a>`);}
@@ -1078,6 +1123,44 @@ $("#q").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preven
   size();addEventListener("resize",()=>{size();if(reduce)draw(0);});
   reduce?draw(0):requestAnimationFrame(draw);
 })();
+
+/* ============ RAW BASS-II DATA (PSI-25) ============ */
+const RAW=[["B1", "PMMA film", 22.2, 0, 6], ["B2", "PMMA film", 22.2, null, null], ["B3", "PMMA film", 22.2, 0.06, 7], ["B4", "PMMA film", 22.2, 0.07, 11], ["B5", "PMMA film", 22.2, 0, 12], ["B6", "PMMA film", 21, 0.08, 0], ["B7", "PMMA film", 22.2, 0.06, 16], ["B8", "PMMA film", 21, 0.25, 131], ["B9", "PMMA film", 21, 0.02, 10], ["B10", "PMMA film", 21, 0.11, 23], ["B11", "PMMA film", 21, 0.14, 46], ["B12", "PMMA film", 22.2, 0.05, 16], ["B13", "PMMA film", 21, 0.32, 61], ["B14", "PMMA film", 15, null, null], ["B15", "PMMA film", 21, 0.1, 22], ["B16", "PMMA film", 17.3, 0.04, 16], ["B17", "PMMA film", 17.5, 0.14, 47], ["B18", "PMMA film", 17.4, 0.08, 31], ["B19", "PMMA film", 17.3, 0.06, 12], ["B20", "PMMA film", 17.4, 0.05, 25], ["B21", "PMMA film", 20.8, 0.08, 19], ["B22", "PMMA film", 20.7, 0.06, 11], ["F1", "Nomex III", 22.2, -0.01, 2], ["F2", "Nomex III", 21, 0.02, null], ["F3", "Nomex III", 21.7, null, null], ["F4", "Wax candle", 17.4, 0.1, 34], ["M1", "PMMA slab", 22.2, 0.16, 60], ["M2", "PMMA slab", 22.2, 0.87, 313], ["M3", "PMMA slab", 20.8, 0.85, 289], ["M4", "PMMA slab", 21.8, 1.73, 559], ["M5", "PMMA slab", 22.2, 2.78, null], ["M6", "PMMA slab", 21.8, 0.89, 344], ["M7", "PMMA slab", 18.9, 0.42, 214], ["M8", "PMMA slab", 19.1, 0.84, 415], ["M9", "PMMA slab", 18, 0.28, 191], ["M10", "PMMA slab", 20.1, 1.23, 537], ["M11", "PMMA slab", 20, 1.1, 531], ["M12", "PMMA slab", 21.7, 1, 428], ["M13", "PMMA slab", 20.8, 1.39, 487], ["M14", "PMMA slab", 22.2, 0.53, 198], ["M15", "PMMA slab", 21, 0.73, 219], ["M16", "PMMA slab", 19.2, 0.8, 303], ["M17", "PMMA slab", 18.8, 1.35, 481], ["M18", "PMMA slab", 17.9, 0.99, 335], ["M19", "PMMA slab", 19, 1.25, 354], ["M20", "PMMA slab", 18, 0.45, 157], ["O1", "PMMA rod", 22.2, 0.41, 52], ["O2", "PMMA rod", 22.2, 0.15, 24], ["O3a", "PMMA rod", 18, 0.03, 6], ["O3b", "PMMA rod", 18, 0.25, 94], ["O4", "PMMA rod", 14.8, 1, null], ["O5a", "PMMA rod", 15.1, 0.8, 498], ["O5b", "PMMA rod", 14.2, 0.09, 94], ["O6", "PMMA rod", 16.7, 0.42, 231], ["O7", "PMMA rod", 16, 0.53, 280], ["O8a", "PMMA rod", 15.7, 0.21, 100], ["O8b", "PMMA rod", 15.5, 0.3, 124], ["O9", "PMMA rod", 15, 0.22, 134], ["O10", "PMMA rod", 16.7, 0.49, 193], ["O11", "PMMA rod", 15.4, 0.45, 288], ["O12", "PMMA rod", 13.6, -0.01, null], ["O13a", "PMMA rod", 15.9, 0.94, 561], ["O13b", "PMMA rod", 14.6, 0.24, null], ["O14", "PMMA rod", 16.3, 0.57, 348], ["O15a", "PMMA rod", 17.1, 0.35, 176], ["O15b", "PMMA rod", 16.7, 1.01, 575], ["O16", "PMMA rod", 14.5, 0.05, 31], ["O17", "PMMA rod", 15.1, 0.59, 375], ["O18", "PMMA rod", 15.2, 0.49, 293], ["O19", "PMMA rod", 15.3, 0.65, 334], ["O20", "PMMA rod", 16.5, 0.37, 60], ["O21", "PMMA rod", 15.9, 0.42, 135], ["O22", "PMMA rod", 15.4, 0.41, 137], ["P1", "PMMA rod", 17.7, 0.17, 13], ["P2", "PMMA rod", 17.4, 0.22, 12], ["P3a", "PMMA rod", 17.7, 0.24, 31], ["P3b", "PMMA rod", 17.4, null, 46], ["P4", "PMMA rod", 18.5, 1.18, 429], ["P5", "PMMA rod", 19.3, 1.35, 525], ["P6", "PMMA rod", 18.9, 0.32, 64], ["P8", "PMMA rod", 16.4, 0.09, 25], ["P9", "PMMA rod", 17.6, 0.43, 10], ["P10", "PMMA rod", 17, 0.43, 42], ["P12", "PMMA rod", 17.5, 0.66, 55], ["P13a", "PMMA rod", 20.7, 1.27, 412], ["P13b", "PMMA rod", 20.6, 0.21, 67], ["P14", "PMMA rod", 18.4, 0.28, 87], ["P15", "PMMA rod", 18, 0.49, 18], ["P16", "PMMA rod", 18.2, 0.62, 56], ["P17", "PMMA rod", 16.8, 0.39, 11], ["P18", "PMMA rod", 20, 0.86, 25], ["P19", "PMMA rod", 17.5, 0.71, 40], ["P20", "PMMA rod", 19, 0.71, 76], ["P21a", "PMMA rod", 16.3, 0.04, 8], ["P21b", "PMMA rod", 16.3, 0.03, 4], ["P22a", "PMMA rod", 20.8, null, null], ["P22b", "PMMA rod", 20, null, null], ["P23", "PMMA rod", 18.2, 1.03, 81], ["P24", "PMMA rod", 19, 1.04, 234], ["P25", "PMMA rod", 20.9, 0.62, 162], ["T1", "SIBAL fabric", 18.5, 0.06, 40], ["T2", "SIBAL fabric", 18.5, 0.04, 38], ["T3", "PMMA sphere", 17.2, 0.28, 68], ["T4", "SIBAL fabric", 18.7, 0.01, 13], ["T5", "SIBAL fabric", 18.8, 0.05, 39], ["T6", "SIBAL fabric", 18.8, 0.04, 38], ["T7", "PMMA sphere", 17.3, 0.27, 91], ["T9", "SIBAL fabric", 16.4, 0.01, 9], ["T10", "SIBAL fabric", 16.4, 0.02, 5], ["T11", "SIBAL fabric", 17.1, 0.04, 44], ["T12", "SIBAL fabric", 16.8, 0, 4], ["T13", "SIBAL fabric", 17.5, 0.01, 10], ["T14", "SIBAL fabric", 16.9, 0.02, 35], ["T15", "SIBAL fabric", 18.7, 0.06, 30], ["T16", "SIBAL fabric", 17.6, 0, 24], ["T17", "SIBAL fabric", 16.9, 0.03, 38], ["T18", "SIBAL fabric", 17.4, 0.02, 20], ["T19", "SIBAL fabric", 17.2, 0.02, 19], ["T20", "SIBAL fabric", 17.2, 0, 14], ["T21", "SIBAL fabric", 17.2, 0.01, 11], ["T22", "SIBAL fabric", 17.1, 0.03, 22], ["T23", "SIBAL fabric", 17.2, 0, 4], ["T24", "SIBAL fabric", 18.2, 0.02, 22], ["T25", "SIBAL fabric", 20.8, 0.03, 18], ["T26", "SIBAL fabric", 20.8, 0.07, 25], ["T27", "SIBAL fabric", 20.7, 0.01, 10], ["T28a", "SIBAL fabric", 20.7, null, null], ["T28b", "SIBAL fabric", 20.7, null, null], ["T29", "SIBAL fabric", 20.7, 0.03, 11]];
+const RCOL={"PMMA slab":"#ff5468","PMMA rod":"#ff8a4c","PMMA sphere":"#e8c46a","PMMA film":"#7cc8ff","SIBAL fabric":"#57d3a2","Nomex III":"#b59cff","Wax candle":"#c5cfdc"};
+function renderRaw(){
+  const ok=RAW.filter(r=>r[2]!=null&&r[4]!=null);
+  const teams=5, below=RAW.filter(r=>r[2]!=null&&r[2]<16).length;
+  $("#rawstats").innerHTML=[[RAW.length,"ISS tests in the log"],[Object.keys(RCOL).length,"sample types"],[teams,"science teams"],[below,"tests started below 16% O₂"]].map(([n,l])=>`<div class="stat"><b class="tab">${n}</b><span>${l}</span></div>`).join("");
+  const W=640,H=400,L=52,R=16,T=14,B=44,x0=13,x1=23,y0=0,y1=600;
+  const sx=v=>L+(v-x0)/(x1-x0)*(W-L-R), sy=v=>T+(1-(v-y0)/(y1-y0))*(H-T-B);
+  let g="";
+  for(let y=0;y<=600;y+=100) g+=`<line x1="${L}" x2="${W-R}" y1="${sy(y)}" y2="${sy(y)}" stroke="#1a2432"/><text x="${L-8}" y="${sy(y)+4}" text-anchor="end" font-size="11" fill="#8b98aa">${y}</text>`;
+  for(let x=14;x<=22;x+=2) g+=`<text x="${sx(x)}" y="${H-B+18}" text-anchor="middle" font-size="11" fill="#8b98aa">${x}%</text>`;
+  g+=`<line x1="${sx(16)}" x2="${sx(16)}" y1="${T}" y2="${H-B}" stroke="#e8c46a" stroke-dasharray="4 4"/><text x="${sx(16)+6}" y="${T+12}" font-size="10.5" fill="#e8c46a">16% O₂: 1-g blowoff for a ¼-inch rod</text>`;
+  g+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle" font-size="11" fill="#8b98aa">starting oxygen, % by volume</text><text transform="translate(13 ${(T+H-B)/2}) rotate(-90)" text-anchor="middle" font-size="11" fill="#8b98aa">CO rise during test, ppm</text>`;
+  ok.forEach((r,i)=>{g+=`<g class="rawpt" tabindex="0" role="button" data-i="${RAW.indexOf(r)}" aria-label="${esc(r[0]+", "+r[1]+", "+r[2]+"% O2, CO rise "+r[4]+" ppm")}"><circle cx="${sx(r[2])}" cy="${sy(Math.min(r[4],600))}" r="5.5" fill="${RCOL[r[1]]}" fill-opacity=".85"/></g>`;});
+  $("#rawsc").innerHTML=g;
+  $("#rawleg").innerHTML=Object.entries(RCOL).map(([k,c])=>`<span><i style="background:${c}"></i>${k}</span>`).join("");
+  // bars
+  const groups={};ok.forEach(r=>{(groups[r[1]]=groups[r[1]]||[]).push(r[4]);});
+  const med=a=>{const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
+  const rows=Object.entries(groups).filter(([k,v])=>v.length>=3).map(([k,v])=>[k,med(v),v.length]).sort((a,b)=>b[1]-a[1]);
+  const BW=400,BL=118,BR=40,rh=40;const bx=v=>BL+v/360*(BW-BL-BR);
+  let b="";rows.forEach(([k,m,n],i)=>{const y=8+i*rh;b+=`<text x="${BL-8}" y="${y+15}" text-anchor="end" font-size="12" fill="#e6ecf4" font-family="IBM Plex Sans">${k}</text><text x="${BL-8}" y="${y+29}" text-anchor="end" font-size="10" fill="#8b98aa">n = ${n}</text><rect x="${BL}" y="${y+4}" width="${Math.max(2,bx(m)-BL)}" height="22" rx="3" fill="${RCOL[k]}"/><text x="${bx(m)+6}" y="${y+20}" font-size="12" fill="#e6ecf4">${Math.round(m)}</text>`;});
+  b+=`<text x="${(BL+BW-BR)/2}" y="${8+rows.length*rh+16}" text-anchor="middle" font-size="11" fill="#8b98aa">median CO rise per test, ppm</text>`;
+  $("#rawbar").setAttribute("viewBox",`0 0 ${BW} ${8+rows.length*rh+26}`);$("#rawbar").innerHTML=b;
+}
+function showRaw(i){const r=RAW[i];$("#rawinfo").innerHTML=`<b>Test ${esc(r[0])} · ${esc(r[1])}</b><br>Starting O₂ ${r[2]}% · CO rise ${r[4]} ppm · CO₂ rise ${r[3]!=null?r[3]+" %":"n/a"} <a class="ref" href="#src-S30">S30</a>`;}
+$("#rawsc").addEventListener("click",e=>{const p=e.target.closest(".rawpt");if(p)showRaw(+p.dataset.i);});
+$("#rawsc").addEventListener("keydown",e=>{const p=e.target.closest(".rawpt");if(p&&(e.key==="Enter"||e.key===" ")){e.preventDefault();showRaw(+p.dataset.i);}});
+
+/* ============ TEAM ============ */
+const TEAM=[["Zeki Kaya Odabaş","President"],["Ali Selim Türkkan","Vice President"],["Kaan Kalender","Team member"],["Çınar Serim","Team member"],["Kuzey Özer","Team member"]];
+$("#names").addEventListener("click",e=>{const b=e.target.closest("[data-m]");if(!b)return;const [n,t]=TEAM[+b.dataset.m];const m=$("#member");
+  const open=b.getAttribute("aria-pressed")==="true";document.querySelectorAll("#names button").forEach(x=>x.setAttribute("aria-pressed","false"));
+  if(open){m.hidden=true;return;}b.setAttribute("aria-pressed","true");
+  const ini=n.split(" ").filter(w=>w).map(w=>w[0]).slice(0,2).join("");
+  m.innerHTML=`<div class="av" aria-hidden="true">${esc(ini)}</div><div><b>${esc(n)}</b><span>${esc(t)} · Team Divalar</span></div>`;m.hidden=false;});
 
 /* ============ COMPARE + LINKS ============ */
 function setScenario(o){Object.assign(state,o);["g","atm","mat","vent"].forEach(k=>$("#"+k).value=state[k]);update();}
@@ -1249,7 +1332,7 @@ labUI();
 labReduce?labDraw(0,true):requestAnimationFrame(labDraw);
 
 readHash();
-renderStatic();renderMargin();renderGaps();update();
+renderStatic();renderMargin();renderGaps();renderRaw();update();
 </script>
 </body>
 
