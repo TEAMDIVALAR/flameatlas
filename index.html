@@ -6,8 +6,8 @@
 <title>FlameAtlas</title>
 <meta name="description" content="FlameAtlas: NASA microgravity combustion findings summarized, ranked and interpreted for crewed exploration fire safety. Team Divalar, NASA Space Apps Challenge 2026.">
 <meta name="generator" content="Super Intelligence (SI) assisted: site brainstormed and coded and data extracted with Claude (Anthropic); concept drafted and answers written by Team Divalar with the help of an AI">
-<meta name="si-disclosure" content="Code and data in this page were generated with SI assistance (Claude, Anthropic). Every figure links to its original NASA or peer-reviewed source.">
-<!-- SI DISCLOSURE: This page's code, data records and text were created with the help of Claude (Anthropic), a Super Intelligence tool, and reviewed by Team Divalar. -->
+<meta name="si-disclosure" content="The site was brainstormed and coded, and data were extracted, with SI assistance (Claude, Anthropic). The concept was drafted and the answers were written by Team Divalar with the help of an AI. Every figure links to its original NASA or peer-reviewed source.">
+<!-- SI DISCLOSURE: This site was brainstormed and coded, and its data records extracted, with the help of Claude (Anthropic), a Super Intelligence tool. Team Divalar drafted the concept, wrote the answers with the help of an AI, and checked every finding against its source. -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -292,6 +292,7 @@ table.gap td.c:hover,table.gap td.c:focus{border-color:var(--ink)}
 .cmp span{font-size:12px}
 .range{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-top:6px}
 .linkrow{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.linkrow[hidden]{display:none}
 
 /* flame lab */
 .lab{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}
@@ -609,14 +610,15 @@ html{scroll-behavior:smooth}
         <div class="faq" id="faq"></div>
       </div>
     </div>
-    <div class="card" id="livebox" style="margin-top:20px;display:none">
-      <div class="idx" style="margin-bottom:10px">LIVE SI ASSISTANT (AVAILABLE WHEN OPENED IN CLAUDE)</div>
+    <div class="card" id="livebox" style="margin-top:20px">
+      <div class="idx" style="margin-bottom:10px">LIVE SI ASSISTANT · RUNS IN YOUR BROWSER · ANSWERS ONLY FROM THE FINDINGS, WITH CITATIONS</div>
       <div class="thread" id="thread" aria-live="polite"></div>
       <form class="askform" id="askform">
         <label for="q" style="position:absolute;left:-9999px">Your question</label>
         <textarea id="q" rows="2" placeholder="Ask your own question"></textarea>
         <button class="btn" id="send" type="submit">Ask</button>
       </form>
+      <div class="linkrow" id="loadrow" hidden><button class="btn" id="loadai" type="button" style="padding:12px 16px">Load the in-browser AI</button><span class="note" style="margin:0">Open-source model, about 1 GB the first time. Runs on your device.</span></div>
       <div class="status" id="status"></div>
     </div>
   </div>
@@ -666,6 +668,12 @@ html{scroll-behavior:smooth}
       </ul>
       <p class="note">This is why FlameAtlas keeps people in the loop: SI makes reading dozens of reports fast, and checking every number against its source keeps the atlas right.</p>
     </div>
+    <div class="card" style="margin-top:20px">
+      <div class="idx" style="margin-bottom:10px">CHECKING THE RISK INDEX AGAINST FLIGHT RESULTS</div>
+      <p style="margin:0 0 12px;font-size:14px;color:#c5cfdc">Same scenario for every material: ISS, sea-level air, typical airflow. If the weights make sense, every material that burned in flight should score higher than every material that did not.</p>
+      <div class="cost" id="check" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
+      <p class="note" id="checkres" style="margin-top:4px"></p>
+    </div>
     <div class="weights" id="weights"></div>
     <p class="note">Limitations: partial-gravity data come from drop towers and aircraft lasting seconds, not long-duration tests. Risk weights are the team's judgment from the cited evidence. Treat scores as a way to compare scenarios and find the evidence, not as a design allowable.</p>
   </div>
@@ -702,7 +710,7 @@ html{scroll-behavior:smooth}
         <dt>Data</dt><dd>NASA PSI (BASS-II experimental table), NASA NTRS and peer-reviewed papers: 30 sources, all linked</dd>
         <dt>Open source</dt><dd><a href="https://github.com/teamdivalar/flameatlas" target="_blank" rel="noopener">github.com/teamdivalar/flameatlas</a></dd>
       </dl>
-      <div class="ab-si"><b>Use of SI</b>We used Claude (Anthropic), a Super Intelligence tool, to brainstorm and code the site, and to extract data from sources.</div>
+      <div class="ab-si"><b>Use of SI</b>We used Claude (Anthropic), a Super Intelligence tool, to brainstorm and code the site, and to extract data from sources. The live assistant runs an open-source AI model in the visitor's browser, and uses Claude when the page is opened inside Claude.</div>
       <div class="ab-si ab-team"><b>What the team did</b>Team Divalar drafted the concept, chose the challenge, wrote the answers with the help of an AI, directed every design decision, found and fixed errors in the SI's work, and checked the findings against their NASA sources. <a href="#si">See what the checks caught</a></div>
       <p class="ab-foot">Not affiliated with or endorsed by NASA.</p>
     </div>
@@ -1046,6 +1054,12 @@ function renderStatic(){
     tbl("Atmosphere (0–24)",Object.values(ATM).map(a=>[a.l.split(" (")[0],a.s]))+
     tbl("Gravity (0–24)",Object.values(GRAV).map(g=>[g.l,g.s]))+
     tbl("Ventilation and evidence weights",[["µg: off / low / typical / strong","−10 / −4 / 0 / +4"],["Partial g: any setting","0"],["Exploration atm. on Moon or Mars","+6 (+2 resistant)"],...Object.values(EV).map(e=>["Evidence: "+e.l,"×"+e.w])]);
+  // sanity check: flight outcomes vs risk index
+  const FLT=[["sibal",true,"F6"],["cotton",true,"F18"],["pmma",true,"F1"],["nomex3",true,"F20"],["nomex",false,"F20"],["ultem",false,"F20"]];
+  const ck=FLT.map(([m,b,f])=>({m,b,f,s:assess("ug","sea",m,"typical").score})).sort((a,b)=>b.s-a.s);
+  $("#check").innerHTML=ck.map(x=>`<div><b class="tab" style="color:${x.b?"var(--ember)":"var(--cool)"}">${x.s}</b><span>${esc(MAT[x.m].l.split(" (")[0])}<br>${x.b?"burned in flight":"did not burn in flight"} ${refLinks([x.f])}</span></div>`).join("");
+  const minB=Math.min(...ck.filter(x=>x.b).map(x=>x.s)),maxN=Math.max(...ck.filter(x=>!x.b).map(x=>x.s));
+  $("#checkres").textContent=minB>maxN?`Result: passes. The lowest-scoring material that burned (${minB}) still scores above the highest-scoring material that did not (${maxN}). This shows the weights order materials the way flight tests did. It does not validate the absolute numbers.`:`Result: does not pass. A material that did not burn scores ${maxN}, above a material that burned (${minB}). The weights need revisiting.`;
 }
 
 function update(){renderRisk();renderFindings();renderScatter();}
@@ -1085,27 +1099,75 @@ function runSearch(){
 }
 $("#qs").addEventListener("input",runSearch);runSearch();
 
-/* optional live assistant, only when opened in Claude */
-let sample=null,busy=false,history=[];
+/* live assistant: Claude when opened inside Claude, otherwise an open model running in the browser (WebLLM, WebGPU) */
+let sample=null,engine=null,busy=false,chatHistory=[];
 const thread=$("#thread");
+const WEBLLM_URL="https://esm.run/@mlc-ai/web-llm@0.2.85";
+const MODEL_PREFS=["Qwen2.5-1.5B-Instruct-q4f16_1-MLC","Llama-3.2-1B-Instruct-q4f16_1-MLC","Qwen2.5-0.5B-Instruct-q4f16_1-MLC"];
 function addMsg(role,html){const d=document.createElement("div");d.className="msg "+(role==="u"?"u":"a");d.innerHTML=`<div class="who">${role==="u"?"You":"FlameAtlas"}</div><div class="body">${html}</div>`;thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return d.querySelector(".body");}
 function fmt(t){return esc(t).replace(/\[(F\d+)\]/g,(m,id)=>`<a class="ref" href="#${id}" data-f="${id}">${id}</a>`).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").split(/\n{2,}/).map(p=>`<p>${p.replace(/\n/g,"<br>")}</p>`).join("");}
-function systemBrief(){
-  return `You are FlameAtlas, an assistant for spacecraft fire safety built for the NASA Space Apps 2026 challenge.
-Answer ONLY from the evidence base below. Cite findings inline as [F1], [F2] etc. If the evidence does not cover the question, say so plainly. Never invent numbers. Answer in the language of the question, under 150 words, plain prose.
-EVIDENCE BASE:
-${FINDINGS.map(f=>`[${f.id}] ${f.t}. ${f.s}`).join("\n")}`;
+function clean(t){return String(t||"").replace(/<think>[\s\S]*?(<\/think>|$)/g,"").trim();}
+const RULES=`You are FlameAtlas, an assistant for spacecraft fire safety built for the NASA Space Apps 2026 challenge.
+Answer ONLY from the evidence base below. Cite findings inline as [F1], [F2] etc. If the evidence does not cover the question, say so plainly. Never invent numbers. Answer in the language of the question, under 150 words, plain prose.`;
+function systemBrief(list){return `${RULES}\nEVIDENCE BASE:\n${(list||FINDINGS).map(f=>`[${f.id}] ${f.t}. ${f.s}`).join("\n")}`;}
+/* small in-browser models get only the most relevant findings */
+const STOP=new Set("the a an and or of in on at to for is are was were be does do did how what why which who when where can could should would will it this that with from by as than then there their about into my our your i we you me us".split(" "));
+function pickFindings(q,n){
+  let terms=q.toLowerCase().replace(/[?.,!;:()"']/g," ").split(/\s+/).filter(w=>w.length>=3&&!STOP.has(w));
+  terms=[...new Set(terms.flatMap(w=>SYN[w]||[w]))];
+  const sc=FINDINGS.map(f=>{const hay=(f.t+" "+f.s+" "+TOPICS[f.topic]+" "+f.mats.map(m=>MAT[m]?MAT[m].l:"").join(" ")+" "+f.env.join(" ")).toLowerCase();
+    let s=0;terms.forEach(w=>{if(hay.includes(w))s+=f.t.toLowerCase().includes(w)?3:1;});return {f,s};});
+  const hit=sc.filter(x=>x.s>0).sort((a,b)=>b.s-a.s||b.f.imp-a.f.imp).map(x=>x.f);
+  const rest=FINDINGS.filter(f=>!hit.includes(f)).sort((a,b)=>b.imp-a.imp);
+  return [...hit,...rest].slice(0,n);
 }
-$("#askform").addEventListener("submit",async e=>{e.preventDefault();const q=$("#q").value.trim();if(!q||busy||!sample)return;$("#q").value="";busy=true;$("#send").disabled=true;
+function setAsk(on,ph){$("#q").disabled=!on;$("#send").disabled=!on;if(ph)$("#q").placeholder=ph;}
+async function loadLocal(){
+  const btn=$("#loadai");btn.disabled=true;$("#status").textContent="Loading the AI library…";
+  try{
+    const webllm=await import(WEBLLM_URL);
+    const ids=(webllm.prebuiltAppConfig&&webllm.prebuiltAppConfig.model_list||[]).map(m=>m.model_id);
+    const model=MODEL_PREFS.find(m=>ids.includes(m))||ids.find(m=>/0\.5B|1B|1\.5B/.test(m)&&/Instruct/i.test(m));
+    if(!model) throw new Error("no model");
+    engine=await webllm.CreateMLCEngine(model,{initProgressCallback:p=>{$("#status").textContent=`Downloading ${model.replace(/-q4.*$/,"")}: ${Math.round((p.progress||0)*100)}% · ${p.text||""}`.slice(0,160);}});
+    $("#loadrow").hidden=true;$("#status").textContent=`Running ${model.replace(/-q4.*$/,"")} on your device. Nothing you type leaves your browser.`;
+    setAsk(true,"Ask your own question");
+    addMsg("a",fmt("Ready. Ask your own question. I answer only from the findings on this page and cite them, like [F1]. I am a small model running on your device, so check the cited findings for the exact numbers."));
+  }catch(err){
+    engine=null;btn.disabled=false;
+    $("#status").textContent="The in-browser AI could not start on this device. Use the search and common questions above.";
+  }
+}
+$("#loadai").addEventListener("click",loadLocal);
+$("#askform").addEventListener("submit",async e=>{e.preventDefault();const q=$("#q").value.trim();if(!q||busy||(!sample&&!engine))return;$("#q").value="";busy=true;$("#send").disabled=true;
   addMsg("u",esc(q));const body=addMsg("a",'<span style="color:var(--muted)">Thinking…</span>');
-  const msgs=[...history,{role:"user",content:q}];
-  try{const res=await sample([{role:"user",content:systemBrief()+"\n\n---\n"+msgs.map(m=>(m.role==="user"?"User: ":"FlameAtlas: ")+m.content).join("\n")}],{cache:false,modelTier:"default",onText:({text})=>{body.innerHTML=fmt(text);}});
-    body.innerHTML=fmt(res.text||"");history.push({role:"user",content:q},{role:"assistant",content:res.text||""});history=history.slice(-6);$("#status").textContent="";}
-  catch(err){body.innerHTML=fmt(err&&err.code==="rate_limited"?"Too many questions in a short time. Wait a minute and try again.":"The live assistant is not available right now. Use the search and common questions above.");}
+  try{
+    let text="";
+    if(sample){
+      const msgs=[...chatHistory,{role:"user",content:q}];
+      const res=await sample([{role:"user",content:systemBrief()+"\n\n---\n"+msgs.map(m=>(m.role==="user"?"User: ":"FlameAtlas: ")+m.content).join("\n")}],{cache:false,modelTier:"default",onText:({text})=>{body.innerHTML=fmt(text);}});
+      text=res.text||"";
+    }else{
+      const list=pickFindings(q,8);
+      const msgs=[{role:"system",content:systemBrief(list)},...chatHistory.slice(-2),{role:"user",content:q}];
+      const chunks=await engine.chat.completions.create({messages:msgs,stream:true,temperature:0.2,max_tokens:320});
+      for await(const c of chunks){text+=(c.choices[0]&&c.choices[0].delta&&c.choices[0].delta.content)||"";body.innerHTML=fmt(clean(text));thread.scrollTop=thread.scrollHeight;}
+      text=clean(text);
+      const ok=new Set(list.map(f=>f.id));text=text.replace(/\[(F\d+)\]/g,(m,id)=>ok.has(id)?m:"");
+    }
+    body.innerHTML=fmt(text);chatHistory.push({role:"user",content:q},{role:"assistant",content:text});chatHistory=chatHistory.slice(-6);
+  }catch(err){body.innerHTML=fmt(err&&err.code==="rate_limited"?"Too many questions in a short time. Wait a minute and try again.":"The live assistant is not available right now. Use the search and common questions above.");}
   busy=false;$("#send").disabled=false;});
 $("#q").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#askform").requestSubmit();}});
 (async()=>{try{if(window.claude&&typeof window.claude.use==="function"){sample=await Promise.race([window.claude.use("sample"),new Promise(r=>setTimeout(()=>r(null),10000))]);}}catch(e){sample=null;}
-  if(sample){$("#livebox").style.display="";addMsg("a",fmt("Ask your own question. I answer only from the findings on this page and cite them, like [F1]."));}})();
+  if(sample){addMsg("a",fmt("Ask your own question. I answer only from the findings on this page and cite them, like [F1]."));return;}
+  setAsk(false,"Load the in-browser AI to ask your own question");
+  if(navigator.gpu){
+    $("#loadrow").hidden=false;
+    addMsg("a",fmt("This assistant runs an open-source AI model directly in your browser: no server, no account, no cost. It reads the findings on this page, answers only from them and cites them, like [F1].\n\nPress the button to load it. The first time it downloads about 1 GB, then your browser keeps it."));
+  }else{
+    addMsg("a",fmt("This assistant runs an open-source AI model directly in your browser, which needs WebGPU (desktop Chrome or Edge). This browser does not support it.\n\nSearch the findings or open the common questions above instead."));
+  }})();
 
 /* ============ HERO FLAMES ============ */
 (function(){
@@ -1252,8 +1314,9 @@ function labVerdict(g,o2,flow){
     else v={k:"unk",l:"No data",t:"Below 13.6% O₂, the lowest burning point measured on the ISS for this rod. Lower levels were not tested.",r:["F1"]};
   } else {
     const nm=g<0.2?"lunar":"Martian";
-    if(o2>=16) v={k:"burn",l:"Burns",t:`It burns in 1 g at this oxygen level, and ${nm} gravity is expected to be at least as flammable.`,r:["F2","F3"]};
-    else if(o2>=13.6) v={k:"unk",l:"Likely burns",t:`Earth testing says no, but flames in ${nm} gravity have been sustained at lower oxygen than in 1 g. No long-duration data exist yet.`,r:["F2","F3"]};
+    const dt=" Partial-gravity data so far come from drop-tower tests lasting seconds, so confidence is low.";
+    if(o2>=16) v={k:"burn",l:"Burns",t:`It burns in 1 g at this oxygen level, and ${nm} gravity is expected to be at least as flammable.`+dt,r:["F2","F3"]};
+    else if(o2>=13.6) v={k:"unk",l:"Likely burns",t:`Earth testing says no, but flames in ${nm} gravity have been sustained at lower oxygen than in 1 g.`+dt,r:["F2","F3"]};
     else v={k:"unk",l:"Unknown",t:"Below every measured burning point for this rod. NASA's FM2 project plans the first long-duration burns on the Moon.",r:["F2"]};
   }
   v.earth=earth;return v;
