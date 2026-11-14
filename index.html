@@ -200,6 +200,53 @@ textarea{flex:1;resize:none;background:var(--panel-2);color:var(--ink);border:1p
 footer{padding:28px 0 48px;color:var(--muted);font-size:12px}
 footer p{margin:4px 0}
 
+/* si */
+.sibadge{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13.5px;color:var(--muted);margin:-10px 0 22px;max-width:560px}
+.sibadge span{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--void);background:var(--cool);border-radius:999px;padding:3px 9px}
+.tag.si{color:var(--cool);border-color:rgba(124,200,255,.35)}
+.pipe{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;gap:8px;align-items:stretch}
+.pipe>div:not(.arr){border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--panel-2)}
+.pipe>div.hot{border-color:rgba(124,200,255,.45);background:rgba(124,200,255,.07)}
+.pipe b{display:block;font-size:15px;margin-bottom:4px}
+.pipe span{font-size:12.5px;color:var(--muted);line-height:1.45;display:block}
+.pipe .arr{display:flex;align-items:center;color:var(--cool);font-family:var(--f-mono)}
+.audit{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#d3dbe6}
+@media (max-width:980px){.pipe{grid-template-columns:1fr}.pipe .arr{justify-content:center;transform:rotate(90deg);height:18px}}
+
+/* questions */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.qsearch{width:100%;background:var(--panel-2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:inherit;font-size:15px}
+.qsearch:focus{outline:2px solid var(--cool);outline-offset:1px}
+.qchips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
+.qres{display:flex;flex-direction:column;gap:8px;max-height:520px;overflow-y:auto}
+.qr{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel-2)}
+.qr:hover{border-color:var(--cool)}
+.qr b{display:block;font-size:14px;color:var(--ink)}
+.qr span{font-size:13px;color:var(--muted)}
+.qr mark{background:rgba(124,200,255,.22);color:var(--ink);border-radius:3px;padding:0 2px}
+.faq{display:flex;flex-direction:column;gap:8px}
+.faq details{border:1px solid var(--line);border-radius:10px;background:var(--panel-2)}
+.faq summary{cursor:pointer;padding:12px 14px;font-size:14.5px;color:var(--ink);list-style:none;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--f-mono);color:var(--cool)}
+.faq details[open] summary::after{content:"−"}
+.faq .ans{padding:0 14px 12px;font-size:14px;color:#c5cfdc;line-height:1.6}
+@media (max-width:980px){.qa{grid-template-columns:1fr}}
+
+/* cta + impact */
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.cta .btn{display:inline-flex;align-items:center;padding:12px 16px;text-decoration:none}
+.impact{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.impact h3{font-size:16px;font-weight:600;margin-bottom:10px}
+.impact ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#d3dbe6}
+.impact li b{color:var(--ink)}
+.impact p{font-size:14px;color:#c5cfdc;margin:0 0 8px}
+.cost{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 10px}
+.cost div{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel-2)}
+.cost b{display:block;font-family:var(--f-display);font-size:20px;font-weight:500}
+.cost span{font-size:12px;color:var(--muted)}
+@media (max-width:980px){.impact{grid-template-columns:1fr}}
+
 /* gaps */
 .gapstats{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px}
 .gapwrap{overflow-x:auto}
@@ -288,6 +335,7 @@ html{scroll-behavior:smooth}
       <a href="#map">Flammability map</a>
       <a href="#findings">Findings</a>
       <a href="#gaps">Evidence gaps</a>
+      <a href="#impact">Impact</a>
       <a href="#ask">Ask</a>
       <a href="#experiments">Experiments</a>
       <a href="#method">Method</a>
@@ -303,7 +351,9 @@ html{scroll-behavior:smooth}
       <div class="eyebrow">NASA Space Apps 2026 · Microgravity fire safety</div>
       <h1>Fire off Earth <em>plays by different rules.</em></h1>
       <p class="lede">FlameAtlas reads decades of NASA microgravity combustion results, ranks them by what matters for your mission, and turns them into fire-safety calls for the Moon, Mars and everything in between.</p>
+      <p class="sibadge"><span>SI-powered</span>Built by using Claude to read 29 NASA and peer-reviewed sources, then checking every finding by hand. <a href="#si">How</a></p>
       <div class="stats" id="stats"></div>
+      <div class="cta"><a class="btn" href="#lab">Try the Flame Lab</a><a class="btn ghost" href="#gaps">See what NASA should test next</a></div>
     </div>
     <div class="flamebox" aria-label="Animated comparison of a candle flame on Earth and a spherical flame in microgravity">
       <canvas id="flames"></canvas>
@@ -454,26 +504,72 @@ html{scroll-behavior:smooth}
   </div>
 </section>
 
+<section id="impact">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="idx">05 · IMPACT AND FEASIBILITY</div><h2>Who it helps, what it costs, where it goes next</h2>
+      <p>FlameAtlas is built to be used, kept up to date and extended without a budget.</p></div>
+    </div>
+    <div class="impact">
+      <div class="card">
+        <h3>Who uses it</h3>
+        <ul>
+          <li><b>Habitat and vehicle designers</b> compare cabin materials and atmospheres before they commit to costly flammability tests.</li>
+          <li><b>Mission safety teams</b> check fire response choices: fan shutdown, extinguishing agent, smoke detection timing. <a class="ref" href="#F18" data-f="F18">F18</a><a class="ref" href="#F14" data-f="F14">F14</a><a class="ref" href="#F11" data-f="F11">F11</a></li>
+          <li><b>Researchers and space agencies</b> use the evidence-gap map to see which experiments are still missing. <a class="ref" href="#gaps">Gaps</a></li>
+          <li><b>Students and the public</b> use the Flame Lab to see why fire behaves differently in space.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Beyond space</h3>
+        <p>The smoke detection problem studied on the ISS also applies to closed environments on Earth. NASA's SAME investigation notes that accurate smoke detection in places such as submarines and underwater laboratories can save lives. <a class="ref" href="#src-S29">S29</a></p>
+        <p>The same approach (collect scattered test results, rank them for a scenario, show the gaps) can be reused for any safety field where data are spread across many reports.</p>
+      </div>
+      <div class="card">
+        <h3>Cost and sustainability</h3>
+        <div class="cost"><div><b class="tab">$0</b><span>hosting (GitHub Pages)</span></div><div><b class="tab">0</b><span>servers or databases</span></div><div><b class="tab">1</b><span>file to maintain</span></div></div>
+        <p>The whole tool is one HTML file with no libraries and no backend. Adding a new NASA result means adding one record with its source. The code and data are open, so others can review and extend them.</p>
+      </div>
+      <div class="card">
+        <h3>Roadmap</h3>
+        <ul>
+          <li><b>NASA PSI data tables:</b> add raw test matrices from BASS-II and other investigations to the flammability map.</li>
+          <li><b>Lunar data:</b> add results from NASA's FM2 project, which plans the first long-duration burns in lunar gravity. <a class="ref" href="#src-S11">S11</a></li>
+          <li><b>Partner agency data:</b> add JAXA's FLARE experiments on Kibo, which study material flammability under gravity effects, including applicability to the lunar surface. <a class="ref" href="#src-S28">S28</a></li>
+          <li><b>More materials:</b> extend the atlas to wire insulation and other cabin materials as flight data appear. <a class="ref" href="#src-S25">S25</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="ask">
   <div class="wrap">
     <div class="sec-head">
-      <div><div class="idx">05 · ASK FLAMEATLAS</div><h2>Ask the evidence base</h2>
-      <p>A Claude-powered assistant that answers only from the findings on this page, cites them, and says when the data runs out.</p></div>
+      <div><div class="idx">06 · QUESTIONS</div><h2>Fire safety questions, answered from the evidence</h2>
+      <p>Search the 23 findings, or open one of the common questions. Answers were drafted with SI from the findings and checked by the team. Every answer links to the findings behind it.</p></div>
     </div>
-    <div class="ask">
+    <div class="qa">
       <div class="card">
-        <div class="thread" id="thread" aria-live="polite"></div>
-        <form class="askform" id="askform">
-          <label for="q" style="position:absolute;left:-9999px">Your question</label>
-          <textarea id="q" rows="2" placeholder="e.g. Can we use CO₂ extinguishers in a lunar habitat?"></textarea>
-          <button class="btn" id="send" type="submit">Ask</button>
-        </form>
-        <div class="status" id="status"></div>
+        <label class="idx" for="qs" style="display:block;margin-bottom:10px">SEARCH THE FINDINGS</label>
+        <input type="search" id="qs" class="qsearch" placeholder="Try: helium, Moon, smoke, cotton, fans" autocomplete="off">
+        <div class="qchips" id="qchips"></div>
+        <div class="qres" id="qres" aria-live="polite"></div>
       </div>
       <div class="card">
-        <div class="idx" style="margin-bottom:12px">TRY A QUESTION</div>
-        <div class="sugg" id="sugg"></div>
+        <div class="idx" style="margin-bottom:10px">COMMON QUESTIONS</div>
+        <div class="faq" id="faq"></div>
       </div>
+    </div>
+    <div class="card" id="livebox" style="margin-top:20px;display:none">
+      <div class="idx" style="margin-bottom:10px">LIVE SI ASSISTANT (AVAILABLE WHEN OPENED IN CLAUDE)</div>
+      <div class="thread" id="thread" aria-live="polite"></div>
+      <form class="askform" id="askform">
+        <label for="q" style="position:absolute;left:-9999px">Your question</label>
+        <textarea id="q" rows="2" placeholder="Ask your own question"></textarea>
+        <button class="btn" id="send" type="submit">Ask</button>
+      </form>
+      <div class="status" id="status"></div>
     </div>
   </div>
 </section>
@@ -481,7 +577,7 @@ html{scroll-behavior:smooth}
 <section id="experiments">
   <div class="wrap">
     <div class="sec-head">
-      <div><div class="idx">06 · EXPERIMENT CATALOG</div><h2>The experiments behind the atlas</h2>
+      <div><div class="idx">07 · EXPERIMENT CATALOG</div><h2>The experiments behind the atlas</h2>
       <p>From candle-sized flames in a glovebox to meter-long fires inside a departing cargo ship.</p></div>
     </div>
     <div class="exps" id="exps"></div>
@@ -491,13 +587,36 @@ html{scroll-behavior:smooth}
 <section id="method">
   <div class="wrap">
     <div class="sec-head">
-      <div><div class="idx">07 · METHOD</div><h2>How FlameAtlas works</h2></div>
+      <div><div class="idx">08 · METHOD</div><h2>How FlameAtlas works</h2></div>
     </div>
     <div class="steps">
       <div class="card step"><div class="k">STEP 1 · INGEST</div><h3>Collect</h3><p>NASA Physical Sciences Informatics investigation records, NASA Technical Reports Server papers and peer-reviewed follow-ups for each experiment.</p></div>
       <div class="card step"><div class="k">STEP 2 · EXTRACT</div><h3>Structure</h3><p>We used Claude (an SI tool) to read each NASA paper and investigation record and draft structured records: test conditions (oxygen, pressure, airflow, gravity, material) and outcomes. Team Divalar then checks every number against its source.</p></div>
       <div class="card step"><div class="k">STEP 3 · RANK</div><h3>Score</h3><p>Each finding gets a mission relevance score, an evidence weight (flight scale beats drop tower beats model) and a safety impact level.</p></div>
       <div class="card step"><div class="k">STEP 4 · INTERPRET</div><h3>Explain</h3><p>The risk console and the assistant turn the ranked evidence into scenario scores and cited answers, and flag where data is missing.</p></div>
+    </div>
+    <div class="card" id="si" style="margin-top:20px;scroll-margin-top:80px">
+      <div class="idx" style="margin-bottom:14px">THE SI PIPELINE BEHIND FLAMEATLAS</div>
+      <div class="pipe">
+        <div><b class="tab">29</b><span>NASA and peer-reviewed sources: PSI records, NTRS papers, journals</span></div>
+        <div class="arr" aria-hidden="true">→</div>
+        <div class="hot"><b>SI extraction</b><span>Claude reads each source and drafts structured records: conditions, outcomes, numbers, citation</span></div>
+        <div class="arr" aria-hidden="true">→</div>
+        <div><b>Human check</b><span>The team compares every number with its source and corrects or removes what does not match</span></div>
+        <div class="arr" aria-hidden="true">→</div>
+        <div><b class="tab">23 + 16 + 72</b><span>findings, flight test points and evidence-gap cells</span></div>
+        <div class="arr" aria-hidden="true">→</div>
+        <div class="hot"><b>SI interpretation</b><span>Ranking, risk actions and question answers drafted with Claude from the checked records</span></div>
+      </div>
+      <div class="idx" style="margin:22px 0 10px">WHAT THE SOURCE CHECKS CAUGHT</div>
+      <ul class="audit">
+        <li>Found by the team: a source link the SI produced (old S2) could not be found. Replaced with a verified BASS-II paper.</li>
+        <li>Found by the team: a "4.5 cm gap" claim was not in its source. Removed and replaced with a verified Saffire V finding (F19).</li>
+        <li>Found in a second source-by-source review the team requested: a Saffire-II acrylic result was a normal-gravity value, not a spaceflight one. Removed from the map.</li>
+        <li>Ribbed-acrylic test conditions corrected to 26.9% O₂ and 76 kPa (F22); silicone smoke mean size corrected to 227 nm (F12).</li>
+        <li>Statements softened where the source said less than the draft (F6, F7, F21).</li>
+      </ul>
+      <p class="note">This is why FlameAtlas keeps people in the loop: SI makes reading dozens of reports fast, and checking every number against its source keeps the atlas right.</p>
     </div>
     <div class="weights" id="weights"></div>
     <p class="note">Limitations: partial-gravity data come from drop towers and aircraft lasting seconds, not long-duration tests. Risk weights are the team's judgment from the cited evidence. Treat scores as a way to compare scenarios and find the evidence, not as a design allowable.</p>
@@ -506,7 +625,7 @@ html{scroll-behavior:smooth}
 
 <section id="sources">
   <div class="wrap">
-    <div class="sec-head"><div><div class="idx">08 · SOURCES</div><h2>Sources</h2></div></div>
+    <div class="sec-head"><div><div class="idx">09 · SOURCES</div><h2>Sources</h2></div></div>
     <ul class="srcs" id="srcs"></ul>
   </div>
 </section>
@@ -559,7 +678,9 @@ const SOURCES = {
   S24:{t:"Opposed flame spreading along a structured PMMA sample in exploration atmosphere under microgravity (ICES 2021, NTRS 20210017838)",u:"https://ntrs.nasa.gov/citations/20210017838"},
   S25:{t:"Experimental study on downward/opposed flame spread over electric wires in partial gravity (Proc. Combustion Institute 39)",u:"https://discovery.ucl.ac.uk/10154634/1/PCI39_CNES-Partial-G-report_manuscript.pdf"},
   S26:{t:"Cool Flame Investigation (CFI) Science Concept Review, NASA Glenn (2014), with FLEX test data",u:null},
-  S27:{t:"Case Western Reserve University faculty publication (January 2024): numerical simulations of duct-height effects on flame spread in the Saffire experiments",u:"https://commons.case.edu/facultyworks/1135"}
+  S27:{t:"Case Western Reserve University faculty publication (January 2024): numerical simulations of duct-height effects on flame spread in the Saffire experiments",u:"https://commons.case.edu/facultyworks/1135"},
+  S28:{t:"JAXA, Combustion Experiment in Microgravity leaflet: FLARE-2 and FLARE-3 material flammability evaluation under gravity effects (2026)",u:"https://humans-in-space.jaxa.jp/2026/07/Leaflet_CombustionExperimentInMicrogravity.pdf"},
+  S29:{t:"Smoke Aerosol Measurement Experiment (SAME) investigation record, NASA PSI",u:"https://psi.nasa.gov"}
 };
 
 /* ============ FINDINGS ============ */
@@ -795,7 +916,7 @@ function renderFindings(){
     return `<article class="fnd i${f.imp}" id="${f.id}">
       <div class="rk tab">#${rank}<small>${f.id}</small></div>
       <div><h3>${esc(f.t)}</h3><p>${esc(f.s)}</p>
-        <div class="meta"><span class="tag">${TOPICS[f.topic]}</span><span class="tag">${EV[f.ev].l}</span><span class="tag">Impact ${"●".repeat(f.imp)}${"○".repeat(3-f.imp)}</span>${f.why.map(w=>`<span class="tag match">✓ ${esc(w)}</span>`).join("")}</div></div>
+        <div class="meta"><span class="tag si">SI-extracted</span><span class="tag">${TOPICS[f.topic]}</span><span class="tag">${EV[f.ev].l}</span><span class="tag">Impact ${"●".repeat(f.imp)}${"○".repeat(3-f.imp)}</span>${f.why.map(w=>`<span class="tag match">✓ ${esc(w)}</span>`).join("")}</div></div>
       <div class="score"><b class="tab">${pct}</b><div class="bar2"><i style="width:${pct}%"></i></div>${refLinks(f.src)}</div>
     </article>`;}).join("");
 }
@@ -863,77 +984,61 @@ function renderStatic(){
 
 function update(){renderRisk();renderFindings();renderScatter();}
 
-/* ============ ASK (Claude via sample capability) ============ */
-const FALLBACK=[
- {q:"Is a lunar habitat more dangerous than the ISS for fire?",a:"Probably yes, for two compounding reasons. First, the oxygen needed to sustain a flame appears to reach its minimum near lunar gravity, and centrifuge tests showed Mylar's oxygen margin was −5.75 points in lunar g versus −4.1 in zero-g [F2][F3]. Second, planned habitats use 8.2 psia with 34% O₂, where few thin materials pass even Earth tests [F4]. Caveat: lunar-gravity data so far come from tests lasting about 5 seconds, so confidence is low until long-duration tests fly."},
- {q:"Should the crew turn off the fans during a fire?",a:"In microgravity, stopping airflow removes the buoyancy-free oxygen supply, which tends to weaken a flame. But Saffire V showed charring fabrics at raised oxygen may not go out quickly, and a low flow can help clear vapor and cool the fuel [F18]. On the Moon or Mars, buoyancy still feeds the flame, and drop-tower tests found cutting ventilation was not effective [F3]."},
- {q:"Which extinguisher works best in microgravity?",a:"Drop-tower tests found CO₂ was the best agent per mole on Earth, but helium was the most effective in microgravity, because CO₂ re-radiates heat back to the fuel [F14]. FLEX measured oxygen floors for droplet fuels with CO₂ and helium diluents of about 12–13% for methanol [F15]. The ISS currently uses CO₂ extinguishers, so this is an open design question rather than a settled recommendation."},
- {q:"Why does smoke matter more than heat in a spacecraft fire?",a:"Saffire VI fires peaked at only 1.5–3.2 kW, but the acrylic tests pushed CO₂ above NASA's 1-hour limit and CO above the 24-hour limit [F10]. The smoke detector reached its alarm threshold at 981 s, after most of the gas had already been released [F11]. Detection and gas scrubbing therefore drive crew safety more than temperature."}
+/* ============ QUESTIONS (works everywhere) ============ */
+const FAQ=[
+ {q:"Is a lunar habitat more dangerous than the ISS for fire?",a:"Probably, for two reasons that add up. The oxygen needed for flammability appears to reach its minimum near lunar gravity [F2], and in drop-tower centrifuge tests Mylar's oxygen margin was −5.75 points in lunar g versus −4.1 in zero-g [F3]. Planned habitats also use 8.2 psia with 34% O₂, where few thin materials pass even Earth tests [F4]. The lunar data come from tests lasting seconds, so confidence is still low."},
+ {q:"Can a material that passes Earth tests still burn in space?",a:"Yes. Acrylic rods kept burning at 13.6% O₂ on the ISS but blow off at 16% in normal gravity, so NASA researchers say Earth limits should be lowered by at least 2.4 points [F1]. In microgravity a fabric flame also spread against the airflow, which a 1-g flame cannot do downward [F21]."},
+ {q:"Should the crew turn off the fans during a fire?",a:"In microgravity, stopping airflow cuts off fresh oxygen, but Saffire V showed that cotton at raised oxygen survived a short no-flow period and that melting plastics do not go out quickly in still air [F18][F19]. Lowering the flow to a small value can be better than stopping it [F18]. On the Moon, buoyancy still feeds the flame and cutting ventilation was not effective in drop-tower tests [F3]."},
+ {q:"Which extinguishing agent works best in microgravity?",a:"In drop-tower tests CO₂ was the most effective agent per mole on Earth, but helium was the most effective in microgravity, because CO₂ re-radiates heat back to the fuel [F14]. ISS droplet tests found oxygen floors of about 12–13% for methanol with CO₂ or helium diluents [F15]. The ISS currently uses CO₂ extinguishers, so this is an open design question."},
+ {q:"Why does smoke matter more than heat in a spacecraft fire?",a:"Saffire VI fires peaked at only 1.5–3.2 kW, yet the acrylic tests pushed CO₂ above NASA's 1-hour limit and CO above the 24-hour limit [F10]. The smoke detector alarmed at 981 s, after most of the gas had been released [F11]."},
+ {q:"Do fires spread faster or slower in space?",a:"Usually slower, but that does not make them safe. Fabric spread at about 2.03 mm/s in Saffire versus 41.8 mm/s upward on Earth [F8], yet materials burn at lower oxygen in microgravity [F1]. Faster airflow speeds a fire up [F7], and tight spaces made spread almost twice as fast [F9]."},
+ {q:"Why are flames round in space?",a:"On Earth, hot gas rises and pulls the flame into a teardrop. Without gravity there is no rising hot gas, so oxygen reaches the flame only by slow diffusion and the flame becomes a sphere. Microgravity gas flames are also taller, wider, cooler and five to eight times sootier than on Earth [F17]. Try it in the Flame Lab."},
+ {q:"What is a cool flame and why does it matter?",a:"After the visible flame around large heptane droplets went out on the ISS, the droplets kept burning through low-temperature chemistry that cameras could not see [F16]. So a fire that looks out may still be burning."},
+ {q:"Which materials resisted fire in flight tests?",a:"Ultem and Nomex HT90-40 did not burn in ISS air at about 15 cm/s, and a Nomex sample did not ignite in Saffire VI. Nomex III, a different grade, did burn at 22% O₂ [F20]."},
+ {q:"What is the exploration atmosphere and why is it riskier?",a:"NASA's recommended Moon-to-Mars habitat atmosphere is 8.2 psia with 34% oxygen, chosen to shorten spacewalk preparation [F4]. Lower pressure slows flame spread [F23], but the higher oxygen fraction makes materials such as acrylic more flammable [F5], and few thin materials are rated at those conditions even on Earth [F4]."},
+ {q:"Can smoke detectors tell smoke from dust in orbit?",a:"Not easily. Smoke particles from spacecraft materials are mostly 100–200 nm, but silicone smoke puts almost half its mass above 1 µm [F12]. Background dust particles on the ISS are also larger than on Earth [F13], so detectors need to read a wide range of sizes."},
+ {q:"What data are still missing?",a:"Most combinations of material, atmosphere and gravity have never been tested: 55 of the 72 in this atlas have no data, including every Mars case and every lunar case at raised oxygen. NASA's FM2 project plans the first long-duration burns on the Moon [F2]. See the Evidence Gaps section."}
 ];
-let sample=null, busy=false, history=[];
+function fmtA(t){return esc(t).replace(/\[(F\d+)\]/g,(m,id)=>`<a class="ref" href="#${id}" data-f="${id}">${id}</a>`);}
+$("#faq").innerHTML=FAQ.map(f=>`<details><summary>${esc(f.q)}</summary><div class="ans">${fmtA(f.a)}</div></details>`).join("");
+const QCHIPS=["helium","Moon","smoke","fans","cotton","acrylic","34%","cool flame"];
+$("#qchips").innerHTML=QCHIPS.map(c=>`<button class="chipbtn" type="button" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+$("#qchips").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;$("#qs").value=b.dataset.c;runSearch();});
+const SYN={moon:["lunar","moon"],lunar:["lunar","moon"],mars:["mars","martian"],fans:["airflow","flow","ventilation","fans"],fan:["airflow","flow","ventilation","fans"],acrylic:["pmma","acrylic"],pmma:["pmma","acrylic"],extinguisher:["co₂","helium","extinguish"],co2:["co₂","co2"],smoke:["smoke","detector","particle"],oxygen:["o₂","oxygen"]};
+function hl(t,terms){const ws=terms.filter(w=>w.length>=2).sort((a,b)=>b.length-a.length).map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"));if(!ws.length)return esc(t);
+  const r=new RegExp("("+ws.join("|")+")","gi");return t.split(r).map((part,i)=>i%2?"<mark>"+esc(part)+"</mark>":esc(part)).join("");}
+function runSearch(){
+  const q=$("#qs").value.trim().toLowerCase();
+  if(!q){$("#qres").innerHTML='<span class="note" style="margin:0">Type a word to search all findings.</span>';return;}
+  let terms=q.split(/\s+/).filter(Boolean);terms=[...new Set(terms.flatMap(w=>SYN[w]||[w]))];
+  const res=FINDINGS.map(f=>{const hay=(f.t+" "+f.s+" "+TOPICS[f.topic]+" "+f.mats.map(m=>MAT[m]?MAT[m].l:"").join(" ")+" "+f.env.join(" ")).toLowerCase();
+    let sc=0;terms.forEach(w=>{if(hay.includes(w))sc+=f.t.toLowerCase().includes(w)?3:1;});return {f,sc};}).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc||b.f.imp-a.f.imp);
+  $("#qres").innerHTML=res.length?res.map(({f})=>`<a class="qr" href="#${f.id}" data-f="${f.id}"><b>${f.id} · ${hl(f.t,terms)}</b><span>${hl(f.s,terms)}</span></a>`).join("")
+    :'<span class="note" style="margin:0">No finding mentions that. Try another word, or check the Evidence Gaps section: it may be untested.</span>';
+}
+$("#qs").addEventListener("input",runSearch);runSearch();
+
+/* optional live assistant, only when opened in Claude */
+let sample=null,busy=false,history=[];
 const thread=$("#thread");
 function addMsg(role,html){const d=document.createElement("div");d.className="msg "+(role==="u"?"u":"a");d.innerHTML=`<div class="who">${role==="u"?"You":"FlameAtlas"}</div><div class="body">${html}</div>`;thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return d.querySelector(".body");}
 function fmt(t){return esc(t).replace(/\[(F\d+)\]/g,(m,id)=>`<a class="ref" href="#${id}" data-f="${id}">${id}</a>`).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").split(/\n{2,}/).map(p=>`<p>${p.replace(/\n/g,"<br>")}</p>`).join("");}
-$("#sugg").innerHTML=FALLBACK.map((f,i)=>`<button type="button" data-q="${i}">${esc(f.q)}</button>`).join("");
-$("#sugg").addEventListener("click",e=>{const b=e.target.closest("[data-q]");if(!b)return;ask(FALLBACK[+b.dataset.q].q,+b.dataset.q);});
-$("#askform").addEventListener("submit",e=>{e.preventDefault();const q=$("#q").value.trim();if(q){$("#q").value="";ask(q);}});
-$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#askform").requestSubmit();}});
-
 function systemBrief(){
-  const r=assess(state.g,state.atm,state.mat,state.vent);
   return `You are FlameAtlas, an assistant for spacecraft fire safety built for the NASA Space Apps 2026 challenge.
-Answer ONLY from the evidence base below. Cite findings inline as [F1], [F2] etc. If the evidence does not cover the question, say so plainly and say what data would be needed. Never invent numbers. This is not a certification tool.
-Answer in the same language as the user's question. Keep answers under 170 words, plain prose, no headings.
-You may call assess_mission to compute the FlameAtlas Risk Index for a scenario.
-
-Current scenario in the console: ${r.input.g}; ${r.input.atm}; material ${r.input.mat}; ventilation ${r.input.vent}. Risk index ${r.score}/100 (${r.level}, ${r.conf} confidence).
-
+Answer ONLY from the evidence base below. Cite findings inline as [F1], [F2] etc. If the evidence does not cover the question, say so plainly. Never invent numbers. Answer in the language of the question, under 150 words, plain prose.
 EVIDENCE BASE:
-${FINDINGS.map(f=>`[${f.id}] ${f.t}. ${f.s} (evidence: ${EV[f.ev].l}; sources ${f.src.join(", ")})`).join("\n")}
-
-EXPERIMENTS: ${EXPS.map(x=>`${x.n} (${x.p}): ${x.d}`).join(" | ")}`;
+${FINDINGS.map(f=>`[${f.id}] ${f.t}. ${f.s}`).join("\n")}`;
 }
-const TOOLS=[{name:"assess_mission",description:"Compute the FlameAtlas Risk Index (0-100) for a scenario. Returns score, level, confidence, factor breakdown and recommended actions with finding IDs.",
-  inputSchema:{type:"object",properties:{gravity:{type:"string",enum:Object.keys(GRAV)},atmosphere:{type:"string",enum:Object.keys(ATM)},material:{type:"string",enum:Object.keys(MAT)},ventilation:{type:"string",enum:Object.keys(VENT)}},required:["gravity","atmosphere","material","ventilation"]},
-  execute:(i)=>{const r=assess(i.gravity,i.atmosphere,i.material,i.ventilation);if(!r)throw new Error("Unknown option");return {score:r.score,level:r.level,confidence:r.conf,factors:r.parts.map(p=>({factor:p.n,points:p.v,why:p.why,findings:p.ref})),actions:r.acts.map(a=>a.t+" ["+a.r.join(",")+"]")};}}];
-
-async function ask(q,fallbackIdx){
-  if(busy)return;busy=true;$("#send").disabled=true;
-  addMsg("u",esc(q));
-  if(!sample){
-    const f=fallbackIdx!=null?FALLBACK[fallbackIdx]:null;
-    const body=addMsg("a","");
-    if(f){body.innerHTML=fmt(f.a)+`<p style="font-size:12px;color:var(--muted)">Pre-computed answer. Open this page in Claude to ask your own questions live.</p>`;}
-    else{body.innerHTML=fmt("The live assistant is not available in this view. Open this page in the Claude app or claude.ai to ask your own questions. Meanwhile, try one of the pre-computed questions on the right, or use the risk console above.");}
-    busy=false;$("#send").disabled=false;return;
-  }
-  const body=addMsg("a",'<span style="color:var(--muted)">Thinking…</span>');
-  $("#status").textContent="Reading the evidence base…";
+$("#askform").addEventListener("submit",async e=>{e.preventDefault();const q=$("#q").value.trim();if(!q||busy||!sample)return;$("#q").value="";busy=true;$("#send").disabled=true;
+  addMsg("u",esc(q));const body=addMsg("a",'<span style="color:var(--muted)">Thinking…</span>');
   const msgs=[...history,{role:"user",content:q}];
-  try{
-    const res=await sample([{role:"user",content:systemBrief()+"\n\n---\nUSER QUESTION:\n"+msgs.map(m=>(m.role==="user"?"User: ":"FlameAtlas: ")+m.content).join("\n")}],
-      {cache:false,modelTier:"default",tools:TOOLS,onText:({text})=>{body.innerHTML=fmt(text);thread.scrollTop=thread.scrollHeight;}});
-    body.innerHTML=fmt(res.text||"");
-    history.push({role:"user",content:q},{role:"assistant",content:res.text||""});
-    history=history.slice(-6);
-    $("#status").textContent="";
-  }catch(err){
-    if(err&&err.code==="not_granted"){body.innerHTML=fmt("The assistant needs permission to run. Allow it when Claude asks, or use the pre-computed questions.");}
-    else if(err&&err.code==="rate_limited"){body.innerHTML=fmt("Too many questions in a short time. Wait a minute and try again.");}
-    else{body.innerHTML=fmt("Something went wrong while answering. Try again, or use a pre-computed question.");}
-    $("#status").textContent="";
-  }
-  busy=false;$("#send").disabled=false;
-}
-(async()=>{
-  addMsg("a",fmt("Ask me about fire behavior in microgravity, on the Moon or on Mars. I answer from the ranked findings on this page and cite them, like [F1]."));
-  try{
-    if(window.claude&&typeof window.claude.use==="function"){
-      sample=await Promise.race([window.claude.use("sample"),new Promise(r=>setTimeout(()=>r(null),10000))]);
-    }
-  }catch(e){sample=null;}
-  $("#status").textContent=sample?"Live assistant connected.":"Live assistant unavailable here: showing pre-computed answers.";
-})();
+  try{const res=await sample([{role:"user",content:systemBrief()+"\n\n---\n"+msgs.map(m=>(m.role==="user"?"User: ":"FlameAtlas: ")+m.content).join("\n")}],{cache:false,modelTier:"default",onText:({text})=>{body.innerHTML=fmt(text);}});
+    body.innerHTML=fmt(res.text||"");history.push({role:"user",content:q},{role:"assistant",content:res.text||""});history=history.slice(-6);$("#status").textContent="";}
+  catch(err){body.innerHTML=fmt(err&&err.code==="rate_limited"?"Too many questions in a short time. Wait a minute and try again.":"The live assistant is not available right now. Use the search and common questions above.");}
+  busy=false;$("#send").disabled=false;});
+$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#askform").requestSubmit();}});
+(async()=>{try{if(window.claude&&typeof window.claude.use==="function"){sample=await Promise.race([window.claude.use("sample"),new Promise(r=>setTimeout(()=>r(null),10000))]);}}catch(e){sample=null;}
+  if(sample){$("#livebox").style.display="";addMsg("a",fmt("Ask your own question. I answer only from the findings on this page and cite them, like [F1]."));}})();
 
 /* ============ HERO FLAMES ============ */
 (function(){
