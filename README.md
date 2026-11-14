@@ -26,7 +26,6 @@ Open the GitHub Pages link in the repository description. No login or installati
 - Flammability Map: spaceflight test points by oxygen and airflow, burned or did not burn.
 - Ranked Findings: 23 findings, filterable by topic, re-ranked for the chosen scenario.
 - Evidence Gaps: 72 combinations of material, atmosphere and gravity. 11 have spaceflight data, 6 have only drop tower data and 55 have none. The highest risk untested combinations are listed as candidate next experiments.
-- Ask FlameAtlas: a Claude powered assistant when the page is opened inside Claude, and pre-computed answers elsewhere.
 
 ## Key findings
 
