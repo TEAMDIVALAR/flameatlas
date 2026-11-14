@@ -1100,7 +1100,7 @@ $("#qs").addEventListener("input",runSearch);runSearch();
 
 /* live assistant: Claude when opened inside Claude, otherwise an open-source model on Cloudflare Workers AI */
 /* Paste your Worker address here after setup, e.g. "https://flameatlas-ai.yourname.workers.dev" */
-const ASSIST_URL="";
+const ASSIST_URL="https://flameatlas-ai.aliali43xbox.workers.dev";
 let sample=null,busy=false,chatHistory=[];
 const thread=$("#thread");
 function addMsg(role,html){const d=document.createElement("div");d.className="msg "+(role==="u"?"u":"a");d.innerHTML=`<div class="who">${role==="u"?"You":"FlameAtlas"}</div><div class="body">${html}</div>`;thread.appendChild(d);thread.scrollTop=thread.scrollHeight;return d.querySelector(".body");}
