@@ -1127,12 +1127,14 @@ async function askWorker(q){
   try{
     const r=await fetch(ASSIST_URL,{method:"POST",headers:{"Content-Type":"application/json"},signal:ctl.signal,
       body:JSON.stringify({question:q,evidence:evText(list),history:chatHistory.slice(-4)})});
-    const d=await r.json().catch(()=>({}));
+    const raw=await r.text();let d=null;try{d=JSON.parse(raw);}catch(e){}
+    if(!d){const e=new Error("The worker answered, but not with FlameAtlas data (HTTP "+r.status+"). Is worker.js pasted and deployed? It said: "+raw.slice(0,80));e.diag=true;throw e;}
     if(r.status===429||d.error==="limit"){const e=new Error("limit");e.code="daily_limit";throw e;}
-    if(!r.ok||!d.text) throw new Error(d.error||"http "+r.status);
+    if(!r.ok||!d.text){const e=new Error((d.error||"http "+r.status)+(d.detail?": "+d.detail:""));e.diag=true;throw e;}
     const ok=new Set(list.map(f=>f.id));
     return d.text.replace(/\[(F\d+)\]/g,(m,id)=>ok.has(id)?m:"").replace(/ +([.,;])/g,"$1").trim();
-  }finally{clearTimeout(tm);}
+  }catch(err){if(!err.diag&&err.code!=="daily_limit"){err.message=err.name==="AbortError"?"The worker took too long to answer.":"Could not reach the worker at "+ASSIST_URL+". Either worker.js is not pasted and deployed yet (the default Hello World code blocks requests from this page), or a network or VPN is blocking it.";err.diag=true;}throw err;}
+  finally{clearTimeout(tm);}
 }
 $("#askform").addEventListener("submit",async e=>{e.preventDefault();const q=$("#q").value.trim();if(!q||busy||(!sample&&!ASSIST_URL))return;$("#q").value="";busy=true;$("#send").disabled=true;
   addMsg("u",esc(q));const body=addMsg("a",'<span style="color:var(--muted)">Thinking…</span>');
@@ -1144,7 +1146,7 @@ $("#askform").addEventListener("submit",async e=>{e.preventDefault();const q=$("
       text=res.text||"";
     }else text=await askWorker(q);
     body.innerHTML=fmt(text);chatHistory.push({role:"user",content:q},{role:"assistant",content:text});chatHistory=chatHistory.slice(-6);
-  }catch(err){body.innerHTML=fmt(err&&(err.code==="rate_limited"||err.code==="daily_limit")?"The assistant has reached its free daily limit. Try again tomorrow, or use the search and common questions above.":"The live assistant is not available right now. Use the search and common questions above.");}
+  }catch(err){body.innerHTML=fmt(err&&(err.code==="rate_limited"||err.code==="daily_limit")?"The assistant has reached its free daily limit. Try again tomorrow, or use the search and common questions above.":"The live assistant is not available right now. Use the search and common questions above.")+(err&&err.diag?`<p style="font-size:12px;color:var(--muted)">Details: ${esc(err.message)}</p>`:"");}
   thread.scrollTop=thread.scrollHeight;busy=false;$("#send").disabled=false;});
 $("#q").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#askform").requestSubmit();}});
 (async()=>{try{if(window.claude&&typeof window.claude.use==="function"){sample=await Promise.race([window.claude.use("sample"),new Promise(r=>setTimeout(()=>r(null),10000))]);}}catch(e){sample=null;}
