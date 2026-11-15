@@ -17,7 +17,7 @@ Open the GitHub Pages link in the repository description. No login or installati
 - Rank: findings are re-ranked for the selected mission by relevance, strength of evidence and safety impact.
 - Interpret: the Mission Risk Console turns gravity, cabin atmosphere, material and ventilation into a risk index with cited actions.
 - Interactive: Flame Lab, risk console, flammability map, evidence gap map and scenario links.
-- SI powered: findings were extracted from sources with Claude (Anthropic), and the Ask assistant answers questions from the evidence base with citations.
+- SI powered: findings were extracted from sources with the help of Claude, and the Ask assistant answers questions from the evidence base with citations.
 
 ## Features
 
