@@ -47,7 +47,11 @@ The full list of 26 sources with links is in the Sources section of the site.
 
 ## Use of Super Intelligence (SI)
 
-The concept, site code, data extraction from sources, ranking logic and the Ask assistant were developed with Claude (Anthropic), a Super Intelligence tool. Team Divalar directed the project, checked findings against their sources and edited the content. This disclosure is also included in the page text and metadata.
+We used Claude, a Super Intelligence tool, to brainstorm and code the site and to extract data from sources.
+
+**What the team did:** Team Divalar drafted the concept, chose the challenge, wrote the answers with the help of an AI, directed every design decision, found and fixed errors in the SI's work, and checked every finding against its NASA or peer-reviewed source.
+
+The live assistant runs an open-source model (Llama 3.1 8B) on Cloudflare Workers AI and answers only from the findings on the site, with citations.
 
 ## Limitations
 
