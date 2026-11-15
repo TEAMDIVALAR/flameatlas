@@ -467,6 +467,29 @@ table.gap td.c:hover{transform:scale(1.08)}
 .js .sec-head.rv.in{filter:none}
 @media (prefers-reduced-motion:reduce){.hero::before,.cta .btn::after{animation:none!important}.flamebox{scale:1}}
 
+/* added: tour, swap advisor, assistant chips */
+.tour{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 10px;margin:22px auto 0;max-width:760px;font-size:14.5px;color:#c7ccd6}
+.tour b{width:100%;font-weight:600;color:#fff}
+.tour button{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:14px;color:#e6ebf2;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 14px 8px 8px;cursor:pointer;transition:transform .2s,border-color .2s,background .2s}
+.tour button span{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--cool);color:#04121e;font-weight:700;font-size:12.5px}
+.tour button:hover{border-color:var(--cool);background:rgba(124,200,255,.12);transform:translateY(-2px)}
+.swap{margin-top:18px}
+.swaps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.swaps .sw{background:var(--panel-2);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.swaps .sw small{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.swaps .sw b{font-size:22px;letter-spacing:-.02em}
+.swaps .sw .dn{font-size:13px;color:var(--ok)}
+.swaps .sw button{margin-top:6px;align-self:flex-start;font:inherit;font-size:12.5px;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+.swaps .sw button:hover{border-color:var(--cool)}
+.swaps .best{border-color:rgba(92,214,160,.55)}
+.swapnone{grid-column:1/-1;font-size:14px;color:var(--muted)}
+.wifinote{margin:0 0 12px;font-size:13.5px;line-height:1.5;color:#e9d9c8;background:rgba(255,138,76,.1);border:1px solid rgba(255,138,76,.45);border-radius:12px;padding:10px 14px}
+.wifinote b{color:var(--ember)}
+.askchips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.askchips button{font:inherit;font-size:13px;color:#d3dbe6;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:7px 13px;cursor:pointer}
+.askchips button:hover{border-color:var(--cool);color:#fff}
+.localans .fx{margin:8px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03)}
+@media (max-width:560px){.swaps{grid-template-columns:1fr}}
 @media (max-width:980px){section{padding:84px 0}.hero .wrap{padding-top:76px}}
 @media (max-width:560px){
   body{font-size:16px}
@@ -511,6 +534,7 @@ table.gap td.c:hover{transform:scale(1.08)}
       <p class="sibadge"><span>SI-powered</span>Built by using Claude to read 30 NASA and peer-reviewed sources, then checking every finding by hand. <a href="#si">How</a></p>
       <div class="stats" id="stats"></div>
       <div class="cta"><a class="btn" href="#lab">Try the Flame Lab</a><a class="btn ghost" href="#gaps">See what NASA should test next</a></div>
+      <div class="tour" id="tour"><b>New here? FlameAtlas in 60 seconds:</b><button type="button" data-tour="1"><span>1</span>Earth-safe, space-unsafe</button><button type="button" data-tour="2"><span>2</span>Score a lunar habitat</button><button type="button" data-tour="3"><span>3</span>Ask the SI assistant</button></div>
     </div>
     <div class="flamebox" aria-label="Animated comparison of a candle flame on Earth and a spherical flame in microgravity">
       <canvas id="flames"></canvas>
@@ -597,6 +621,11 @@ table.gap td.c:hover{transform:scale(1.08)}
         <div class="why">
           <div class="idx">WHAT TO DO</div>
           <ul id="actions"></ul>
+        </div>
+        <div class="swap">
+          <div class="idx">SAFER SWAP · SAME MISSION, DIFFERENT MATERIAL</div>
+          <div class="swaps" id="swaps"></div>
+          <p class="note" style="margin-top:8px">Lower score means lower relative risk in this index. Check each material's evidence before choosing it.</p>
         </div>
         <div class="linkrow"><button class="chipbtn" type="button" id="copylink">Copy link to this scenario</button><span class="note" id="copymsg" style="margin:0"></span></div>
         <p class="note">The FlameAtlas Risk Index is an evidence-weighted heuristic for comparing scenarios. It is not a certification method. Weights are listed in <a href="#method">Method</a>.</p>
@@ -745,6 +774,8 @@ table.gap td.c:hover{transform:scale(1.08)}
     </div>
     <div class="card" id="livebox" style="margin-top:20px">
       <div class="idx" style="margin-bottom:10px">LIVE SI ASSISTANT · ANSWERS ONLY FROM THE FINDINGS, WITH CITATIONS</div>
+      <p class="wifinote"><b>On METU (ODTÜ) Wi-Fi?</b> That network blocks the assistant's server. Use mobile data for live answers. If the server can't be reached, the assistant still shows the findings that best match your question.</p>
+      <div class="askchips" id="askchips"></div>
       <div class="thread" id="thread" aria-live="polite"></div>
       <form class="askform" id="askform">
         <label for="q" style="position:absolute;left:-9999px">Your question</label>
@@ -1076,6 +1107,7 @@ function fillSelect(id,obj,val){const el=$(id);el.innerHTML=Object.entries(obj).
 fillSelect("#g",GRAV,state.g);fillSelect("#atm",ATM,state.atm);fillSelect("#mat",MAT,state.mat);fillSelect("#vent",VENT,state.vent);
 ["g","atm","mat","vent"].forEach(k=>$("#"+k).addEventListener("change",e=>{state[k]=e.target.value;update();}));
 $("#presets").innerHTML=PRESETS.map((p,i)=>`<button class="chipbtn" type="button" data-p="${i}">${esc(p.l)}</button>`).join("");
+$("#swaps").addEventListener("click",e=>{const b=e.target.closest("[data-swap]");if(!b)return;state.mat=b.dataset.swap;$("#mat").value=state.mat;update();setTimeout(()=>{try{writeHash();}catch(_){}} ,0);});
 $("#presets").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;const p=PRESETS[+b.dataset.p];Object.assign(state,{g:p.g,atm:p.atm,mat:p.mat,vent:p.vent});["g","atm","mat","vent"].forEach(k=>$("#"+k).value=state[k]);update();});
 
 const LVLC={Low:"var(--ok)",Elevated:"var(--warn)",High:"var(--high)",Severe:"var(--severe)"};
@@ -1098,6 +1130,8 @@ function renderRisk(){
   $("#cmp").innerHTML=Object.entries(GRAV).map(([k,g])=>{const x=assess(k,state.atm,state.mat,state.vent);
     return `<div class="${k===state.g?"cur":""}" data-cg="${k}" role="button" tabindex="0"><small>${esc(g.l.split(":")[0].split(" (")[0])}</small><b class="tab" style="color:${LVLC[x.level]}">${x.score}</b> <span style="color:${LVLC[x.level]}">${x.level}</span><br><span style="color:var(--muted)">${x.conf} confidence</span></div>`;}).join("");
   $("#actions").innerHTML=r.acts.map((a,i)=>`<li class="act"><span class="n">${String(i+1).padStart(2,"0")}</span><span>${esc(a.t)} ${refLinks(a.r)}</span></li>`).join("");
+  const alt=Object.keys(MAT).filter(m=>m!==state.mat).map(m=>({m,x:assess(state.g,state.atm,m,state.vent)})).filter(o=>o.x.score<r.score).sort((a,b)=>a.x.score-b.x.score||a.m.localeCompare(b.m)).slice(0,3);
+  $("#swaps").innerHTML=alt.length?alt.map((o,i)=>`<div class="sw${i===0?" best":""}"><small>${i===0?"LOWEST RISK":"ALTERNATIVE"}</small><span>${esc(MAT[o.m].l.split(" (")[0])}</span><b class="tab" style="color:${LVLC[o.x.level]}">${o.x.score} <span style="font-size:14px">${o.x.level}</span></b><span class="dn">−${r.score-o.x.score} points · ${o.x.conf} confidence</span><button type="button" data-swap="${o.m}">Use this material</button></div>`).join(""):`<p class="swapnone">This is already the lowest-risk material in the atlas for this mission.</p>`;
 }
 
 /* findings ranking */
@@ -1245,14 +1279,37 @@ const evText=list=>(list||FINDINGS).map(f=>`[${f.id}] ${f.t}. ${f.s}`).join("\n"
 function systemBrief(){return `${RULES}\nEVIDENCE BASE:\n${evText()}`;}
 /* send the model the most relevant findings first */
 const STOP=new Set("the a an and or of in on at to for is are was were be does do did how what why which who when where can could should would will it this that with from by as than then there their about into my our your i we you me us".split(" "));
+/* Turkish question words → the English words the findings use */
+const TR=[["yangın",["fire","flame"]],["alev",["flame"]],["yanma",["burn","flammab"]],["yanıc",["flammab","burn"]],["yanar",["burn"]],["mars",["mars"]],["istasyon",["iss"]],["yerçekim",["gravity"]],["mikro",["microgravity"]],["oksijen",["oxygen","o₂"]],["duman",["smoke"]],["alarm",["alarm","detector"]],["dedektör",["detector"]],["algıla",["detect"]],["söndür",["extinguish"]],["fan",["airflow","ventilation","fans"]],["havalandır",["ventilation","airflow"]],["akış",["flow","airflow"]],["malzeme",["material"]],["akrilik",["acrylic","pmma"]],["pencere",["window","acrylic"]],["pamuk",["cotton"]],["kumaş",["fabric","cotton"]],["giysi",["clothing","cotton"]],["havlu",["towel","cotton"]],["zehir",["toxic"]],["toksik",["toxic"]],["gaz",["gas"]],["monoksit",["co ","monoxide"]],["karbondioksit",["co₂"]],["helyum",["helium"]],["tehlike",["hazard","danger"]],["eksik",["gap","untested"]],["deney",["experiment","test"]],["sıcaklık",["temperature","heat"]],["ısı",["heat"]],["silikon",["silicone"]],["kabin",["cabin"]],["astronot",["crew"]],["mürettebat",["crew"]],["söndürücü",["extinguish","co₂","helium"]]];
+const TR_AY=new Set(["ay","ayda","aya","ayın","aydan","ayı","ayʼda"]);
+function queryTerms(q){
+  const words=q.toLocaleLowerCase("tr").replace(/[’'ʼ]/g,"").replace(/[?.,!;:()"]/g," ").split(/\s+/).filter(Boolean);
+  let out=[];
+  for(const w of words){
+    if(TR_AY.has(w)){out.push("moon","lunar");continue;}
+    const tr=TR.filter(([k])=>w.startsWith(k));
+    if(tr.length){tr.forEach(([,v])=>out.push(...v));continue;}
+    if(w.length>=3&&!STOP.has(w))out.push(...(SYN[w]||[w]));
+  }
+  return [...new Set(out)];
+}
+function scoreFindings(q){
+  const terms=queryTerms(q);
+  return FINDINGS.map(f=>{const hay=(f.t+" "+f.s+" "+TOPICS[f.topic]+" "+f.mats.map(m=>MAT[m]?MAT[m].l:"").join(" ")+" "+f.env.join(" ")).toLowerCase();
+    let s=0;terms.forEach(w=>{if(hay.includes(w))s+=f.t.toLowerCase().includes(w)?3:1;});return {f,s};})
+    .filter(x=>x.s>0).sort((a,b)=>b.s-a.s||b.f.imp-a.f.imp).map(x=>x.f);
+}
 function pickFindings(q,n){
-  let terms=q.toLowerCase().replace(/[?.,!;:()"']/g," ").split(/\s+/).filter(w=>w.length>=3&&!STOP.has(w));
-  terms=[...new Set(terms.flatMap(w=>SYN[w]||[w]))];
-  const sc=FINDINGS.map(f=>{const hay=(f.t+" "+f.s+" "+TOPICS[f.topic]+" "+f.mats.map(m=>MAT[m]?MAT[m].l:"").join(" ")+" "+f.env.join(" ")).toLowerCase();
-    let s=0;terms.forEach(w=>{if(hay.includes(w))s+=f.t.toLowerCase().includes(w)?3:1;});return {f,s};});
-  const hit=sc.filter(x=>x.s>0).sort((a,b)=>b.s-a.s||b.f.imp-a.f.imp).map(x=>x.f);
+  const hit=scoreFindings(q);
   const rest=FINDINGS.filter(f=>!hit.includes(f)).sort((a,b)=>b.imp-a.imp);
   return [...hit,...rest].slice(0,n);
+}
+/* answer from the page itself when the live model can't be reached */
+function localAnswer(q,why){
+  const hit=scoreFindings(q).slice(0,3);
+  const head=why==="limit"?"The live model has reached its free daily limit.":"The live model can't be reached from this network (METU Wi-Fi blocks it; mobile data works).";
+  if(!hit.length)return `<div class="localans">${fmt(head+" No finding on this page matches your question closely. Try other words, or the common questions above.")}</div>`;
+  return `<div class="localans">${fmt(head+" These findings match your question best:")}${hit.map(f=>`<div class="fx">${fmt("**["+f.id+"] "+f.t+".** "+f.s)}</div>`).join("")}</div>`;
 }
 function setAsk(on,ph){$("#q").disabled=!on;$("#send").disabled=!on;if(ph)$("#q").placeholder=ph;}
 async function askWorker(q){
@@ -1280,9 +1337,12 @@ $("#askform").addEventListener("submit",async e=>{e.preventDefault();const q=$("
       text=res.text||"";
     }else text=await askWorker(q);
     body.innerHTML=fmt(text);chatHistory.push({role:"user",content:q},{role:"assistant",content:text});chatHistory=chatHistory.slice(-6);
-  }catch(err){body.innerHTML=fmt(err&&(err.code==="rate_limited"||err.code==="daily_limit")?"The assistant has reached its free daily limit. Try again tomorrow, or use the search and common questions above.":"The live assistant is not available right now. Use the search and common questions above.")+(err&&err.diag?`<p style="font-size:12px;color:var(--muted)">Details: ${esc(err.message)}</p>`:"");}
+  }catch(err){body.innerHTML=localAnswer(q,err&&(err.code==="rate_limited"||err.code==="daily_limit")?"limit":"net")+(err&&err.diag?`<p style="font-size:12px;color:var(--muted)">Details: ${esc(err.message)}</p>`:"");}
   thread.scrollTop=thread.scrollHeight;busy=false;$("#send").disabled=false;});
 $("#q").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#askform").requestSubmit();}});
+const ASKQ=["Should the crew turn off the fans?","Which materials resisted fire in flight?","Why could the Moon be riskier than the ISS?","Ay'da yangın daha mı tehlikeli?"];
+$("#askchips").innerHTML=ASKQ.map(t=>`<button type="button">${esc(t)}</button>`).join("");
+$("#askchips").addEventListener("click",e=>{const b=e.target.closest("button");if(!b||$("#q").disabled)return;$("#q").value=b.textContent;$("#askform").requestSubmit();});
 (async()=>{try{if(window.claude&&typeof window.claude.use==="function"){sample=await Promise.race([window.claude.use("sample"),new Promise(r=>setTimeout(()=>r(null),10000))]);}}catch(e){sample=null;}
   if(sample||ASSIST_URL){setAsk(true,"Ask your own question");addMsg("a",fmt("Ask your own question. I answer only from the findings on this page and cite them, like [F1]."));return;}
   setAsk(false,"The live assistant is not connected yet");
@@ -1537,6 +1597,12 @@ labReduce?labDraw(0,true):requestAnimationFrame(labDraw);
 
 readHash();
 renderStatic();renderMargin();renderGaps();renderRaw();update();
+
+/* ============ 60-SECOND TOUR ============ */
+$("#tour").addEventListener("click",e=>{const b=e.target.closest("[data-tour]");if(!b)return;const t=b.dataset.tour;
+  if(t==="1"){$('#lpre button[data-l="0,15,5"]').click();$("#lab").scrollIntoView({behavior:"smooth"});}
+  else if(t==="2"){$('#presets button[data-p="1"]').click();$("#console").scrollIntoView({behavior:"smooth"});}
+  else{$("#livebox").scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>{if(!$("#q").disabled)$("#q").focus({preventScroll:true});},700);}});
 
 /* ============ MOTION ============ */
 (function(){
